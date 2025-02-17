@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuarios Registrados</title>
+    <title>Usuarios</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,13 +22,33 @@
         th {
             background-color: #f2f2f2;
         }
+        .edit-btn {
+            background-color: #3490DD;
+            color: #fff;
+            border-radius: 10px;
+            padding: 5px;
+            cursor: pointer;
+        }
+        .add-btn{
+            background-color: #38C173;
+            color: #fff;
+            border-radius: 10px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .delete-btn{
+            background-color: #E33232;
+            border-radius: 10px;
+            padding: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     
     <h1>Lista de Usuarios</h1>
 
-    <button onclick="agregarUsuario()">Agregar Usuario</button>
+    <button class="add-btn" onclick="agregarUsuario()">Agregar Usuario</button>
     <br/><br/>
     <table>
         <thead>
