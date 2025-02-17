@@ -1,15 +1,9 @@
 const express = require('express');
-const router = express.Router();
-const User = require('../models/userModel');
+const usuarioController = require('../controllers/userController');
 
-router.get('/usuarios', (req, res) => {
-    User.getAllUsers((err, results) => {
-        if (err) {
-            res.status(500).json({ error: err });
-            return;
-        }
-        res.json(results);
-    });
-});
+const router = express.Router();
+
+// Ruta para obtener todos los usuarios
+router.get('/usuarios', usuarioController.getAllUsers);
 
 module.exports = router;

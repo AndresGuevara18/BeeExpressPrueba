@@ -20,7 +20,37 @@ app.get('/', (req, res) => {
 })
 
 app.listen(3000)*/
+
+
+
 const express = require('express');
+const path = require('path');
+const usuarioRoutes = require('./src/routes/userRoutes');
+
+const app = express();
+const PORT = 3000;
+
+// Middleware para analizar JSON
+app.use(express.json());
+
+// Servir archivos estáticos (ahora sí busca en la raíz correctamente)
+app.use(express.static(__dirname));
+
+// Rutas de API
+app.use('/api', usuarioRoutes);
+
+// Ruta principal
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Iniciar servidor
+app.listen(PORT, () => {
+    console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
+});
+
+
+/*/const express = require('express');
 const db = require('./src/config/database');
 const userRoutes = require('./src/routes/userRoutes');
 
@@ -35,4 +65,4 @@ app.get('/', (req, res) => {
 
 app.listen(3000, () => {
     console.log('Server on port 3000');
-});
+});*/

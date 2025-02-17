@@ -1,13 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuarios</title>
+    <title>Usuarios Registrados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
     <h1>Lista de Usuarios</h1>
-    <table border="1">
+    <table>
         <thead>
             <tr>
                 <th>ID</th>
@@ -18,27 +37,44 @@
                 <th>Cargo</th>
             </tr>
         </thead>
-        <tbody id="userTable"></tbody>
+        <tbody id="userTable">
+            <tr>
+                <td colspan="6">Cargando usuarios...</td>
+            </tr>
+        </tbody>
     </table>
 
     <script>
-        fetch('/api/usuarios')
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.getElementById('userTable');
-                data.forEach(user => {
-                    let row = `<tr>
-                        <td>${user.id_usuario}</td>
-                        <td>${user.tipo_documento}</td>
-                        <td>${user.numero_documento}</td>
-                        <td>${user.nombre_empleado}</td>
-                        <td>${user.email_empleado}</td>
-                        <td>${user.id_cargo}</td>
-                    </tr>`;
-                    tableBody.innerHTML += row;
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('/api/usuarios')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Error al obtener los usuarios");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const tableBody = document.getElementById('userTable');
+                    tableBody.innerHTML = "";  // Limpiar la tabla antes de agregar datos
+                    
+                    data.forEach(user => {
+                        let row = `<tr>
+                            <td>${user.id_usuario}</td>
+                            <td>${user.tipo_documento}</td>
+                            <td>${user.numero_documento}</td>
+                            <td>${user.nombre_empleado}</td>
+                            <td>${user.email_empleado}</td>
+                            <td>${user.id_cargo}</td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                    document.getElementById('userTable').innerHTML = 
+                        `<tr><td colspan="6">Error al cargar los datos</td></tr>`;
                 });
-            })
-            .catch(error => console.error('Error cargando usuarios:', error));
+        });
     </script>
 </body>
 </html>
