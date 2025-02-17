@@ -25,7 +25,11 @@
     </style>
 </head>
 <body>
+    
     <h1>Lista de Usuarios</h1>
+
+    <button onclick="agregarUsuario()">Agregar Usuario</button>
+    <br/><br/>
     <table>
         <thead>
             <tr>
@@ -35,6 +39,7 @@
                 <th>Nombre</th>
                 <th>Email</th>
                 <th>Cargo</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody id="userTable">
@@ -65,6 +70,10 @@
                             <td>${user.nombre_empleado}</td>
                             <td>${user.email_empleado}</td>
                             <td>${user.id_cargo}</td>
+                            <td>
+                                <button class="edit-btn" onclick="editarUsuario(${user.id_usuario})">Editar</button>
+                                <button class="delete-btn" onclick="eliminarUsuario(${user.id_usuario})">Eliminar</button>
+                            </td>
                         </tr>`;
                         tableBody.innerHTML += row;
                     });
