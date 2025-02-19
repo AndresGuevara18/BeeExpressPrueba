@@ -23,28 +23,28 @@ app.listen(3000)*/
 
 
 
-const express = require('express');
-const path = require('path');
-const usuarioRoutes = require('./src/routes/userRoutes');
+const express = require('express'); // Importa Express
+const path = require('path'); // Manejo de rutas de archivos
+const usuarioRoutes = require('./src/routes/userRoutes'); // Importa rutas de usuario
 
-const app = express();
-const PORT = 3000;
+const app = express(); // Instancia de Express
+const PORT = 3000; // Define el puerto
 
 // Middleware para analizar JSON
 app.use(express.json());
 
-// Servir archivos estáticos (ahora sí busca en la raíz correctamente)
-app.use(express.static(__dirname));
+//Servir archivos estáticos desde la carpeta 'public'
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Rutas de API
 app.use('/api', usuarioRoutes);
 
-// Ruta principal
+// Ruta principal - Servir el archivo HTML
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Iniciar servidor
+// Iniciar el servidor
 app.listen(PORT, () => {
     console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
 });

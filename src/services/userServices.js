@@ -1,10 +1,12 @@
-const db = require('../config/database');
-const Usuario = require('../models/userModel');
+const db = require('../config/database');//importa el modelo base datos contiene conexion
+const Usuario = require('../models/userModel');//importar modelo de usuario
 
-const usuarioService = {
+const usuarioService = {//objeto contendra los metodos del servicio
+    
+    //metodo obtendra todos los usuarios
     getAllUsers: (callback) => {
-        db.query('SELECT * FROM usuario', (err, results) => {
-            if (err) {
+        db.query('SELECT * FROM usuario', (err, results) => {// ejecuta consulta sql
+            if (err) {//si hay error ejecuta un bloque
                 callback(err, null);
                 return;
             }
@@ -17,4 +19,5 @@ const usuarioService = {
     }
 };
 
+//exporta para que pueda ser usado en otros archivos
 module.exports = usuarioService;

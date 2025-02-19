@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-sans text-center m-5 bg-orange-500">
+
+    <h1 class="text-3xl font-bold mb-4">Lista de Usuarios</h1>
+
+    <a href="/nuevo_usuario.html" class="agregar-usuario" target="_blank">Agregar usuario</a>
+
+    <br/><br/>
+
+    <div class="table-container">
+        <table class="">
+            <thead>
+                <tr class="">
+                    <th class="">ID</th>
+                    <th class="">Tipo Documento</th>
+                    <th class="">Número Documento</th>
+                    <th class="">Nombre</th>
+                    <th class="">Email</th>
+                    <th class="">Cargo</th>
+                    <th class="">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="userTable">
+                <tr>
+                    <td colspan="7" class="">Cargando usuarios...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('/api/usuarios')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Error al obtener los usuarios");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const tableBody = document.getElementById('userTable');
+                    tableBody.innerHTML = "";  
+                    
+                    data.forEach(user => {
+                        let row = `<tr>
+                            <td class="">${user.id_usuario}</td>
+                            <td class="">${user.tipo_documento}</td>
+                            <td class="">${user.numero_documento}</td>
+                            <td class="">${user.nombre_empleado}</td>
+                            <td class="">${user.email_empleado}</td>
+                            <td class="">${user.id_cargo}</td>
+                            <td class="">
+                                <button class="boton boton-editar">Editar</button>
+                                <button class="boton boton-eliminar" onclick="eliminarUsuario(${user.id_usuario})">Eliminar</button>
+                            </td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                    document.getElementById('userTable').innerHTML = 
+                        `<tr><td colspan="7" class="border border-black p-2">Error al cargar los datos</td></tr>`;
+                });
+        });
+    </script>
+</body>
+</html>

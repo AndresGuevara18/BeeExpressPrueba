@@ -1,0 +1,99 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+    background-color: #D9D9D9; /* Naranja */
+}
+
+/* Contenedor con scroll horizontal */
+.table-container {
+    
+    height: 600px;
+    overflow-x: auto; /* Habilita el scroll horizontal si la tabla es muy ancha */
+}
+
+/* Título principal */
+h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Botón Agregar Usuario */
+.agregar-usuario {
+    display: inline-block;
+    background-color: #10374E; /* Verde */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.agregar-usuario:hover {
+    background-color: #388E3C; /* Verde más oscuro */
+}
+
+/* Tabla de usuarios */
+table {
+    width: 100%;
+    min-width: 600px; /* Evita que se haga demasiado pequeña */
+    border-collapse: collapse;
+    background-color: white;
+    border: 1px solid black;
+}
+
+/* Encabezados */
+th {
+    background-color: #e0e0e0; /* Gris claro */
+    padding: 10px;
+    border: 1px solid black;
+}
+
+/* Filas alternas */
+tbody tr:nth-child(odd) {
+    background-color: #ffffff; /* Blanco */
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2; /* Gris claro */
+}
+
+/* Celdas */
+td {
+    padding: 10px;
+    border: 1px solid black;
+}
+
+/* Contenedor de usuarios */
+#userTable {
+    text-align: center;
+}
+
+/* Botones de acción */
+.boton {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;   
+    transition: background 0.3s;
+}
+
+.boton:hover {
+    opacity: 0.8;
+}
+
+/* Botón Editar */
+.boton-editar {
+    background-color: #bdc2bd; /* Azul */
+    color: #48742C;
+}
+
+/* Botón Eliminar */
+.boton-eliminar {
+    background-color: #FFB3B3; /* Rojo */
+    color: #BB271A;
+}
