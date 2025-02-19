@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargos</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-sans text-center m-5 bg-orange-500">
+
+    <h1 class="text-3xl font-bold mb-4">Lista de Cargos</h1>
+
+    <a href="/#" class="agregar-usuario" target="_blank">Agregar Cargo</a>
+
+    <br/><br/>
+
+    <div class="table-container overflow-x-auto">
+        <table class="border-collapse w-full bg-white shadow-lg">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="border border-black p-2">ID</th>
+                    <th class="border border-black p-2">Nombre Cargo</th>
+                    <th class="border border-black p-2">Descripción</th>
+                    <th class="border border-black p-2">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="cargoTable">
+                <tr>
+                    <td colspan="4" class="border border-black p-2">Cargando cargos...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('/api/cargos') // Ruta para obtener los cargos
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Error al obtener los cargos");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const tableBody = document.getElementById('cargoTable');
+                    tableBody.innerHTML = "";  
+
+                    data.forEach(cargo => {
+                        let row = `<tr class="odd:bg-white even:bg-gray-200">
+                            <td class="border border-black p-2">${cargo.id_cargo}</td>
+                            <td class="border border-black p-2">${cargo.nombre_cargo}</td>
+                            <td class="border border-black p-2">${cargo.descripcion || "N/A"}</td>
+                            <td class="border border-black p-2">
+                                <button class="boton boton-editar">Editar</button>
+                                <button class="boton boton-eliminar" >Eliminar</button>
+                            </td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                    document.getElementById('cargoTable').innerHTML = 
+                        `<tr><td colspan="4" class="border border-black p-2">Error al cargar los datos</td></tr>`;
+                });
+        });
+
+        function eliminarCargo(id) {
+            if (confirm("¿Seguro que deseas eliminar este cargo?")) {
+                fetch(`/api/cargos/${id}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Error al eliminar el cargo");
+                        }
+                        location.reload(); // Recarga la página para actualizar la tabla
+                    })
+                    .catch(error => alert(error.message));
+            }
+        }
+    </script>
+
+</body>
+</html>

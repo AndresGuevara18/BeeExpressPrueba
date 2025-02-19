@@ -8,9 +8,8 @@ body {
 
 /* Contenedor con scroll horizontal */
 .table-container {
-    
     height: 600px;
-    overflow-x: auto; /* Habilita el scroll horizontal si la tabla es muy ancha */
+    overflow-x: auto;
 }
 
 /* Título principal */
@@ -21,10 +20,18 @@ h1 {
     color: #333;
 }
 
+/* Contenedor de herramientas */
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
 /* Botón Agregar Usuario */
 .agregar-usuario {
-    display: inline-block;
-    background-color: #10374E; /* Verde */
+    background-color: #10374E;
     color: white;
     padding: 10px 20px;
     border-radius: 8px;
@@ -34,13 +41,37 @@ h1 {
 }
 
 .agregar-usuario:hover {
-    background-color: #388E3C; /* Verde más oscuro */
+    background-color: #388E3C;
+}
+
+/* Campo de búsqueda */
+.buscar-usuario {
+    width: 200px;
+    padding: 8px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Botón Lista Cargos */
+.cargo-lista {
+    background-color: #10374E;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.cargo-lista:hover {
+    background-color: #1B4F72;
 }
 
 /* Tabla de usuarios */
 table {
     width: 100%;
-    min-width: 600px; /* Evita que se haga demasiado pequeña */
+    min-width: 600px;
     border-collapse: collapse;
     background-color: white;
     border: 1px solid black;
@@ -48,18 +79,18 @@ table {
 
 /* Encabezados */
 th {
-    background-color: #e0e0e0; /* Gris claro */
+    background-color: #e0e0e0;
     padding: 10px;
     border: 1px solid black;
 }
 
 /* Filas alternas */
 tbody tr:nth-child(odd) {
-    background-color: #ffffff; /* Blanco */
+    background-color: #ffffff;
 }
 
 tbody tr:nth-child(even) {
-    background-color: #f2f2f2; /* Gris claro */
+    background-color: #f2f2f2;
 }
 
 /* Celdas */
@@ -88,12 +119,12 @@ td {
 
 /* Botón Editar */
 .boton-editar {
-    background-color: #bdc2bd; /* Azul */
+    background-color: #bdc2bd;
     color: #48742C;
 }
 
 /* Botón Eliminar */
 .boton-eliminar {
-    background-color: #FFB3B3; /* Rojo */
+    background-color: #FFB3B3;
     color: #BB271A;
 }

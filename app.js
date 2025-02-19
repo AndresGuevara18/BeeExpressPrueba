@@ -26,6 +26,7 @@ app.listen(3000)*/
 const express = require('express'); // Importa Express
 const path = require('path'); // Manejo de rutas de archivos
 const usuarioRoutes = require('./src/routes/userRoutes'); // Importa rutas de usuario
+const cargoRoutes = require('./src/routes/cargoRoutes'); // Importa las rutas de cargo
 
 const app = express(); // Instancia de Express
 const PORT = 3000; // Define el puerto
@@ -37,7 +38,8 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Rutas de API
-app.use('/api', usuarioRoutes);
+app.use('/api', usuarioRoutes);//usuarios
+app.use('/api', cargoRoutes); // cargo
 
 // Ruta principal - Servir el archivo HTML
 app.get('/', (req, res) => {

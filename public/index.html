@@ -10,7 +10,12 @@
 
     <h1 class="text-3xl font-bold mb-4">Lista de Usuarios</h1>
 
-    <a href="/nuevo_usuario.html" class="agregar-usuario" target="_blank">Agregar usuario</a>
+    <!-- Contenedor para alinear elementos -->
+    <div class="toolbar">
+        <a href="/nuevo_usuario.html" class="agregar-usuario" target="_blank">Agregar usuario</a>
+        <input type="text" id="buscarUsuario" class="buscar-usuario" placeholder="Buscar usuario...">
+        <a href="/cargo.html" class="cargo-lista">Lista Cargos</a>
+    </div>
 
     <br/><br/>
 
@@ -34,7 +39,6 @@
             </tbody>
         </table>
     </div>
-    
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

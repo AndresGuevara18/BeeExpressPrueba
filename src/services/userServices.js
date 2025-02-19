@@ -1,6 +1,7 @@
 const db = require('../config/database');//importa el modelo base datos contiene conexion
 const Usuario = require('../models/userModel');//importar modelo de usuario
 
+
 const usuarioService = {//objeto contendra los metodos del servicio
     
     //metodo obtendra todos los usuarios
