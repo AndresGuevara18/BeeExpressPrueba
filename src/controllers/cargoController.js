@@ -26,7 +26,11 @@ const cargoController = {
                 return;
             }
 
-            res.status(201).json(nuevoCargo);
+            //res.status(201).json(nuevoCargo);
+            res.status(201).json({
+                message: "✅ Cargo agregado correctamente",
+                redirect: "/cargo.html" // URL a la que se redirigirá el usuario
+            });
         });
     }
 };
