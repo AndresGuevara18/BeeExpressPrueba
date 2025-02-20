@@ -16,6 +16,27 @@ const cargoService = {
             callback(null, cargos);
         });
     },
+
+    //crear cargo
+    createCargo: (carData, callback) => {
+        const { nombre_cargo, descripcion } = carData;
+    
+        // Corrección en la consulta SQL
+        db.query(
+            'INSERT INTO cargo (nombre_cargo, descripcion) VALUES (?, ?)', 
+            [nombre_cargo, descripcion], 
+            (err, result) => {
+                if (err) {
+                    callback(err, null);
+                    return;
+                }
+    
+                // Instancia del nuevo cargo con el ID insertado
+                const nuevoCargo = new Cargo(result.insertId, nombre_cargo, descripcion);
+                callback(null, nuevoCargo);
+            }
+        );
+    }
 };
 
 // Exporta el servicio para que pueda ser utilizado en otros archivos

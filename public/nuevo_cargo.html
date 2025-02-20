@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Cargo</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-sans text-center m-5 bg-orange-500">
+
+    <h1 class="text-3xl font-bold mb-4">Agregar Nuevo Cargo</h1>
+
+    <form id="cargoForm" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <label for="nombre_cargo" class="block text-left font-bold">Nombre del Cargo:</label>
+        <input type="text" id="nombre_cargo" name="nombre_cargo" required class="w-full p-2 border rounded mb-4">
+
+        <label for="descripcion" class="block text-left font-bold">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" required class="w-full p-2 border rounded mb-4"></textarea>
+
+        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Agregar Cargo</button>
+    </form>
+
+    <p id="mensaje" class="mt-4 text-lg font-bold"></p>
+
+    <script>
+        document.getElementById('cargoForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Evita que el formulario recargue la página
+
+            const nombre_cargo = document.getElementById('nombre_cargo').value.trim();
+            const descripcion = document.getElementById('descripcion').value.trim();
+            const mensaje = document.getElementById('mensaje');
+
+            // Validación básica
+            if (!nombre_cargo || !descripcion) {
+                mensaje.textContent = "❌ Todos los campos son obligatorios";
+                mensaje.style.color = "red";
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/cargos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nombre_cargo, descripcion })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: No se pudo agregar el cargo`);
+                }
+
+                const data = await response.json();
+                mensaje.textContent = "✅ Cargo agregado correctamente";
+                mensaje.style.color = "green";
+                document.getElementById('cargoForm').reset(); // Limpia el formulario
+
+                console.log("Cargo agregado:", data);
+            } catch (error) {
+                console.error(error);
+                mensaje.textContent = "❌ Error al agregar el cargo";
+                mensaje.style.color = "red";
+            }
+        });
+    </script>
+
+</body>
+</html>

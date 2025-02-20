@@ -12,6 +12,22 @@ const cargoController = {
             }
             res.json(cargos); // Responde con la lista de cargos en formato JSON
         });
+    }, 
+
+    //metodo agregar cargo
+    createCargo: (req, res) =>{
+        //extrae datos enviados del cuerpo de la solicitud
+        const cargoData = req.body;
+
+        //llamdo metodo servicio para crear cargo
+        cargoService.createCargo(cargoData, (err, nuevoCargo) => {
+            if (err) {
+                res.status(500).json({ error: "error al  crear cargo"});
+                return;
+            }
+
+            res.status(201).json(nuevoCargo);
+        });
     }
 };
 
