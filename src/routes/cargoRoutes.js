@@ -12,5 +12,11 @@ router.get('/cargos/:id_cargo', cargoController.getCargoById);
 //ruta agregar cargo
 router.post('/cargos', cargoController.createCargo);
 
+// Ruta para actualizar un cargo
+router.put('/cargos/:id_cargo', cargoController.updateCargo);
+
+// Ruta para eliminar un cargo
+router.delete('/cargos/:id_cargo', cargoController.deleteCargo);
+
 // Exporta el enrutador para ser usado en otros archivos
 module.exports = router;

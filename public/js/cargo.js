@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("btnAgregarCargo").addEventListener("click", agregarCargo);
 });
 
-// 🔍 Función para buscar un cargo por ID y mostrarlo en el modal
+// 🔍 Buscar cargo por ID y mostrarlo en el modal
 function buscarCargo() {
     const idCargo = document.getElementById("buscarCargo").value.trim();
 
@@ -15,9 +15,7 @@ function buscarCargo() {
 
     fetch(`/api/cargos/${idCargo}`)
         .then(response => {
-            if (!response.ok) {
-                throw new Error("Cargo no encontrado");
-            }
+            if (!response.ok) throw new Error("Cargo no encontrado");
             return response.json();
         })
         .then(cargo => {
@@ -25,7 +23,6 @@ function buscarCargo() {
             document.getElementById("cargoNombre").innerText = cargo.nombre_cargo;
             document.getElementById("cargoDescripcion").innerText = cargo.descripcion || "Sin descripción";
 
-            // 📌 Mostrar el modal
             const modal = document.getElementById("modalCargo");
             modal.classList.remove("hidden");
             modal.style.display = "flex";
@@ -35,11 +32,12 @@ function buscarCargo() {
         });
 }
 
-// ❌ Función para cerrar el modal
+// ❌ Cerrar modal
 function cerrarModal() {
-    const modal = document.getElementById("modalCargo");
-    modal.classList.add("hidden");
-    modal.style.display = "none";
+    document.getElementById("modalCargo").classList.add("hidden");
+    document.getElementById("modalCargo").style.display = "none";
+    // Limpiar el campo de búsqueda al cerrar el modal
+    document.getElementById("buscarCargo").value = "";
 }
  
 //funcion agregar cargo y redireccionar al cargo
@@ -79,9 +77,7 @@ function agregarCargo() {
 function cargarTodosLosCargos() {
     fetch('/api/cargos')
         .then(response => {
-            if (!response.ok) {
-                throw new Error("Error al obtener los cargos");
-            }
+            if (!response.ok) throw new Error("Error al obtener los cargos");
             return response.json();
         })
         .then(data => {
@@ -97,14 +93,18 @@ function cargarTodosLosCargos() {
                     <td class="border border-black p-2">${cargo.nombre_cargo}</td>
                     <td class="border border-black p-2">${cargo.descripcion || "N/A"}</td>
                     <td class="border border-black p-2">
-                        <button class="boton boton-editar">Editar</button>
-                        <button class="boton boton-eliminar" data-id="${cargo.id_cargo}">Eliminar</button>
+                        <button class="boton boton-editar" data-id="${cargo.id_cargo}">✏️ Editar</button>
+                        <button class="boton boton-eliminar" data-id="${cargo.id_cargo}">🗑 Eliminar</button>
                     </td>
                 `;
 
-                // Agregar evento para eliminar
+                // Agregar eventos a botones
                 row.querySelector(".boton-eliminar").addEventListener("click", function () {
                     eliminarCargo(this.dataset.id);
+                });
+
+                row.querySelector(".boton-editar").addEventListener("click", function () {
+                    editarCargo(this.dataset.id);
                 });
 
                 tableBody.appendChild(row);
@@ -117,8 +117,50 @@ function cargarTodosLosCargos() {
         });
 }
 
-// ❌ Función para eliminar un cargo
+// ❌ Eliminar un cargo
 function eliminarCargo(id) {
     if (confirm("¿Seguro que deseas eliminar este cargo?")) {
+        fetch(`/api/cargos/${id}`, { method: "DELETE" })
+            .then(response => {
+                if (!response.ok) throw new Error("Error al eliminar el cargo");
+                return response.json();
+            })
+            .then(() => {
+                alert("✅ Cargo eliminado correctamente.");
+                cargarTodosLosCargos(); // Recargar la tabla
+            })
+            .catch(error => {
+                console.error(error);
+                alert("❌ Error al eliminar el cargo.");
+            });
     }
+}
+
+// ✏️ Editar un cargo
+function editarCargo(id) {
+    const nuevoNombre = prompt("Nuevo nombre del cargo:");
+    const nuevaDescripcion = prompt("Nueva descripción del cargo:");
+
+    if (!nuevoNombre || !nuevaDescripcion) {
+        alert("⚠️ Debes ingresar todos los datos.");
+        return;
+    }
+
+    fetch(`/api/cargos/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre_cargo: nuevoNombre, descripcion: nuevaDescripcion }),
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Error al actualizar el cargo");
+        return response.json();
+    })
+    .then(() => {
+        alert("✅ Cargo actualizado correctamente.");
+        cargarTodosLosCargos(); // Recargar la tabla
+    })
+    .catch(error => {
+        console.error(error);
+        alert("❌ Error al actualizar el cargo.");
+    });
 }
