@@ -6,6 +6,9 @@ const router = express.Router(); // Crea un enrutador con Express.Router()
 // Ruta para obtener todos los cargos
 router.get('/cargos', cargoController.getAllCargos);
 
+// Ruta para obtener un cargo por su ID
+router.get('/cargos/:id_cargo', cargoController.getCargoById);
+
 //ruta agregar cargo
 router.post('/cargos', cargoController.createCargo);
 

@@ -44,7 +44,7 @@ app.use('/api', cargoRoutes); // cargo
 
 // Ruta principal - Servir el archivo HTML
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public','index.html'));
+    res.sendFile(path.join(__dirname, 'public','usuario.html'));
 });
 
 // Manejo de rutas no encontradas (Error 404)

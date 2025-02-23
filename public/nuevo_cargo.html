@@ -1,72 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Agregar Cargo</title>
-    <link rel="stylesheet" href="css/nuevo_usuario.css" />
-  </head>
-  <body>
+    <link rel="stylesheet" href="css/nuevo_cargo.css" />
+</head>
+<body>
     <div class="form-container">
-      <h2>Agregar Nuevo Cargo</h2>
+        <h2>Agregar Nuevo Cargo</h2>
 
-      <form id="cargoForm">
-        <div class="input-group">
-          <i class="fas fa-briefcase"></i>
-          <input
-            type="text"
-            id="nombre_cargo"
-            name="nombre_cargo"
-            placeholder="Nombre del Cargo"
-            required
-          />
-        </div>
+        <form id="cargoForm">
+            <div class="input-group">
+                <i class="fas fa-briefcase"></i>
+                <input type="text" id="nombre_cargo" name="nombre_cargo" placeholder="Nombre del Cargo" required/>
+            </div>
 
-        <div class="input-group">
-          <i class="fas fa-file-alt"></i>
-          <input
-            type="text"
-            id="descripcion"
-            name="descripcion"
-            placeholder="Descripción"
-            required
-          />
-        </div>
+            <div class="input-group">
+                <i class="fas fa-file-alt"></i>
+                <input type="text" id="descripcion" name="descripcion" placeholder="Descripción" required/>
+            </div>
 
-        <button type="submit">Agregar Cargo</button>
-      </form>
+            <button type="button" id="btnAgregarCargo" data-action="agregar">Agregar Cargo</button>
+        </form>
 
-      <p id="mensaje"></p>
+        <p id="mensaje"></p>
     </div>
 
-    <script>
-      document
-        .getElementById("cargoForm")
-        .addEventListener("submit", function (event) {
-          event.preventDefault(); // Evita que el formulario recargue la página
-
-          const nombre_cargo = document.getElementById("nombre_cargo").value;
-          const descripcion = document.getElementById("descripcion").value;
-
-          fetch("/api/cargos", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ nombre_cargo, descripcion }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              alert(data.message); // Muestra el mensaje de éxito
-              if (data.redirect) {
-                window.location.href = data.redirect; // Redirige a cargo.html
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-              alert("❌ Error al agregar el cargo");
-            });
-        });
-    </script>
-  </body>
+    <script src="js/cargo.js"></script>
+</body>
 </html>
