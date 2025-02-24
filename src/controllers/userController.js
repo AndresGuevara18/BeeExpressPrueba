@@ -1,19 +1,33 @@
-const usuarioService = require('../services/userServices');//importar el servicio de usuario 
+const usuarioService = require('../services/userServices'); // Importar el servicio de usuario
 
-//objeto que contendra los metodos 
 const usuarioController = {
-
-    //metodo obtener los usuarios 
-    getAllUsers: (req, res) => {//encarga de manejar la solicitud para obtener los usuarios
-        usuarioService.getAllUsers((err, usuarios) => {// funcion call back llamado funcion del servicio 
-            if (err) {//responde condigo 500 si hay un error
+    // 🔹 Obtener todos los usuarios
+    getAllUsers: (req, res) => {
+        usuarioService.getAllUsers((err, usuarios) => {
+            if (err) {
                 res.status(500).json({ error: "Error al obtener los usuarios" });
                 return;
             }
-            res.json(usuarios);//responde con la lista de usuarios formato json
+            res.json(usuarios);
         });
+    },
+
+    // 🔹 Crear un nuevo usuario
+    createUser: async (req, res) => {
+        try {
+            const usuarioData = req.body;
+            const fotoBuffer = req.file ? req.file.buffer : null;
+
+            const nuevoUsuario = await usuarioService.createUser(usuarioData, fotoBuffer);
+
+            res.status(201).json({
+                message: "✅ Usuario creado exitosamente.",
+                usuario: nuevoUsuario
+            });
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
     }
 };
 
-//exporta el objeto para ser utilizado en otros archivos 
 module.exports = usuarioController;

@@ -1,10 +1,11 @@
-const express = require('express');//importa modulo express para crear servidor
-const usuarioController = require('../controllers/userController');//importar controlador usuario
 
-const router = express.Router();//crea enrutador  utilizando express.router
+//router.post('/usuarios', upload.single('foto'), usuarioController.createUser);
+const express = require('express'); // Importar Express
+const usuarioController = require('../controllers/userController');
 
-// Ruta para obtener todos los usuarios
-router.get('/usuarios', usuarioController.getAllUsers);//define una ruta get en usuarios
+const router = express.Router(); // 🚀 Definir el router antes de usarlo
 
-//exportar enrutador para ser usado en otro archivos
-module.exports = router;
+router.get('/usuarios', usuarioController.getAllUsers);
+router.post('/usuarios', usuarioController.createUser);
+
+module.exports = router; // Exportar el router
