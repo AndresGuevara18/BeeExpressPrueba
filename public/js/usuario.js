@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 window.location.href = "/usuario.html";
             } else {
                 alert("FRONT⚠️ Error: " + result.error); // Muestra un mensaje de error si falla
+                window.location.href = "/nuevo_usuario.html";
             }
         } catch (error) {
             // Si ocurre un error en la petición, se captura y se muestra en la consola
@@ -50,3 +51,5 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+
