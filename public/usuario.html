@@ -10,71 +10,38 @@
 
     <h1 class="text-3xl font-bold mb-4">Lista de Usuarios</h1>
 
-    <!-- Contenedor para alinear elementos -->
+    <!-- 🔹 Contenedor para alinear elementos -->
     <div class="toolbar">
-        <a href="/nuevo_usuario.html" class="agregar-usuario" >Agregar usuario</a>
+        <a href="/nuevo_usuario.html" class="agregar-usuario">Agregar usuario</a>
         <input type="text" id="buscarUsuario" class="buscar-usuario" placeholder="Buscar usuario...">
         <a href="/cargo.html" class="cargo-lista">Lista Cargos</a>
     </div>
 
     <br/><br/>
 
+    <!-- 🔹 Tabla donde se mostrarán los usuarios -->
     <div class="table-container">
-        <table class="">
+        <table>
             <thead>
-                <tr class="">
-                    <th class="">ID</th>
-                    <th class="">Tipo Documento</th>
-                    <th class="">Número Documento</th>
-                    <th class="">Nombre</th>
-                    <th class="">Email</th>
-                    <th class="">Cargo</th>
-                    <th class="">Acciones</th>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo Documento</th>
+                    <th>Número Documento</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Cargo</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="userTable">
                 <tr>
-                    <td colspan="7" class="">Cargando usuarios...</td>
+                    <td colspan="7">Cargando usuarios...</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            fetch('/api/usuarios')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Error al obtener los usuarios");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const tableBody = document.getElementById('userTable');
-                    tableBody.innerHTML = "";  
-                    
-                    data.forEach(user => {
-                        let row = `<tr>
-                            <td class="">${user.id_usuario}</td>
-                            <td class="">${user.tipo_documento}</td>
-                            <td class="">${user.numero_documento}</td>
-                            <td class="">${user.nombre_empleado}</td>
-                            <td class="">${user.email_empleado}</td>
-                            <td class="">${user.id_cargo}</td>
-                            <td class="">
-                                <button class="boton boton-editar">Editar</button>
-                                <button class="boton boton-eliminar" onclick="eliminarUsuario(${user.id_usuario})">Eliminar</button>
-                            </td>
-                        </tr>`;
-                        tableBody.innerHTML += row;
-                    });
-                })
-                .catch(error => {
-                    console.error(error);
-                    document.getElementById('userTable').innerHTML = 
-                        `<tr><td colspan="7" class="border border-black p-2">Error al cargar los datos</td></tr>`;
-                });
-        });
-    </script>
+    <!-- 🔹 Carga el script después del contenido -->
+    <script src="js/usuario.js"></script>
 </body>
 </html>
