@@ -32,20 +32,40 @@ document.addEventListener("DOMContentLoaded", () =>{
             });
     }
 
+    //CERRAR CAMARA
     function closeCamera(){        
-        if (streamVideo) {
-            let tracks = streamVideo.getTracks(); // Obtener las pistas del video
+        if (streamVideo) {//si hay flojo de video
+            let tracks = streamVideo.getTracks(); // Obtener las pistas video devuelve un array de objetos MediaStreamTrack
             tracks.forEach(track => track.stop()); // Detener cada pista
             streamVideo = null; // Resetear la variable
         }
         cameraBox.style.display = "none";// no mostrar contenedor de la camara
-        openCameraBtn.style.display = "block";//ocultar boton de abrir camara
-        captureBtn.style.display = "none"; //mostrar el boton capturar
+        openCameraBtn.style.display = "block";//mostrar boton de abrir camara
+        captureBtn.style.display = "none"; //ocultar el boton capturar
         noCaptureBtn.style.display = "none";
+    }
+
+    //CAPTURAR LA IMAGEN Y CONVERTIRLA BASE64
+    function captureImage(){
+         // Establecer el tamaño del canvas igual al video
+         canvas.width = video.videoWidth;//propiedades que contienen el ancho y alto reales del video que proviene de la cámara.
+         canvas.height = video.videoHeight;
+ 
+         // Dibujar la imagen del video en el canvas
+         const context = canvas.getContext("2d");// obtiene el contexto 2D del canvas
+         context.drawImage(video, 0, 0, canvas.width, canvas.height);//toma foto del video y dibuja en el canvas
+ 
+         // Convertir la imagen a formato Base64
+         const imageBase64 = canvas.toDataURL("image/png");//convertir el contenido del canvas en imagen codificada en Base64.
+         fotoBase64.value = imageBase64; // Guardar en el input oculto
+ 
+         // Mostrar la vista previa de la imagen capturada
+         previewImage.src = imageBase64;//imagen capturada como src del previewImage
+         previewImage.style.display = "block"; // Asegurar que la imagen se muestre
     }
 
     //Ejecutar funciones cuando se hacen clic en los botones
     openCameraBtn.addEventListener("click", openCamera); // Cuando se presiona "Abrir Cámara"
-    noCaptureBtn.addEventListener("click", closeCamera);
-
+    noCaptureBtn.addEventListener("click", closeCamera); // Cuando se presiona "Cerrar Cámara"
+    captureBtn.addEventListener("click", captureImage); // Cuando se presiona "Capturar Foto"
 });
