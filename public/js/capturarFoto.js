@@ -62,6 +62,12 @@ document.addEventListener("DOMContentLoaded", () =>{
          // Mostrar la vista previa de la imagen capturada
          previewImage.src = imageBase64;//imagen capturada como src del previewImage
          previewImage.style.display = "block"; // Asegurar que la imagen se muestre
+
+        cameraBox.style.display = "none";// no mostrar contenedor de la camara
+        openCameraBtn.style.display = "block";//mostrar boton de abrir camara
+        captureBtn.style.display = "none"; //ocultar el boton capturar
+        noCaptureBtn.style.display = "none";
+        closeCamera();
     }
 
     //Ejecutar funciones cuando se hacen clic en los botones
