@@ -1,32 +1,33 @@
-//esparar que el DOM este completamente cargado
-document.addEventListener("DOMContentLoaded", () =>{
-    //capturar elelemntos del html mediante el ID
-    const openCameraBtn = document.getElementById("openCameraBtn"); //boton abrir la camara
-    const cameraBox = document.getElementById("cameraBox");//contenedor para la camara
-    const video = document.getElementById("video");// mostrar la camara
-    const captureBtn = document.getElementById("captureBtn");//capturar la foto
-    const noCaptureBtn = document.getElementById("noCaptureBtn")//cerrar capturar foto
-    const canvas = document.getElementById("canvas"); //se dibuhara la imagen capturada
-    const fotoBase64 = document.getElementById("fotoBase64");//oculto donde se guardara la imagen en base 64
-    const previewImage = document.getElementById("previewImage");//campo para la vista de la imagen
+// js/usuario/camara.js
 
-    let streamVideo = null; // almacenar el flujo de video de la cámara
+export function initializeCamera() {
+    // Capturar elementos del HTML mediante el ID
+    const openCameraBtn = document.getElementById("openCameraBtn"); // Botón abrir la cámara
+    const cameraBox = document.getElementById("cameraBox"); // Contenedor para la cámara
+    const video = document.getElementById("video"); // Mostrar la cámara
+    const captureBtn = document.getElementById("captureBtn"); // Capturar la foto
+    const noCaptureBtn = document.getElementById("noCaptureBtn"); // Cerrar capturar foto
+    const canvas = document.getElementById("canvas"); // Se dibujará la imagen capturada
+    const fotoBase64 = document.getElementById("fotoBase64"); // Oculto donde se guardará la imagen en base 64
+    const previewImage = document.getElementById("previewImage"); // Campo para la vista de la imagen
 
-    // FUNCION ABRIR CAMARA
+    let streamVideo = null; // Almacenar el flujo de video de la cámara
+
+    // FUNCIÓN ABRIR CÁMARA
     function openCamera() {
         try {
-            // método de la API web que solicita al usuario permiso para usar dispositivos de entrada de audio y video
+            // Método de la API web que solicita al usuario permiso para usar dispositivos de entrada de audio y video
             navigator.mediaDevices.getUserMedia({ video: true })
-                .then((mediaStream) => { // después de que conceda el permiso 
+                .then((mediaStream) => { // Después de que conceda el permiso
                     if (mediaStream) { // Verifica que se obtuvo un flujo válido
                         streamVideo = mediaStream; // Se almacena el flujo del video en la variable let
                         video.srcObject = streamVideo; // srcObject propiedad elementos video, mostrar cámara en el elemento video
 
-                        cameraBox.style.display = "block"; // mostrar contenedor de la cámara
+                        cameraBox.style.display = "block"; // Mostrar contenedor de la cámara
 
-                        openCameraBtn.style.display = "none"; // ocultar botón de abrir cámara
-                        captureBtn.style.display = "block"; // mostrar el botón capturar
-                        noCaptureBtn.style.display = "block";
+                        openCameraBtn.style.display = "none"; // Ocultar botón de abrir cámara
+                        captureBtn.style.display = "block"; // Mostrar el botón capturar
+                        noCaptureBtn.style.display = "block"; // Mostrar el botón de no capturar
 
                         console.log("✅ Cámara activada correctamente.");
                     } else {
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () =>{
                         alert("No se pudo acceder a la cámara.");
                     }
                 })
-                .catch((err) => { // capturar error
+                .catch((err) => { // Capturar error
                     console.error("❌ Error al acceder a la cámara", err);
                     alert("No se puede acceder a la cámara.");
                 });
@@ -44,10 +45,10 @@ document.addEventListener("DOMContentLoaded", () =>{
         }
     }
 
-    // CERRAR CAMARA
+    // FUNCIÓN CERRAR CÁMARA
     function closeCamera() {
         try {
-            if (streamVideo) { // si hay flujo de video
+            if (streamVideo) { // Si hay flujo de video
                 let tracks = streamVideo.getTracks(); // Obtener las pistas de video devuelve un array de objetos MediaStreamTrack
                 tracks.forEach(track => track.stop()); // Detener cada pista
                 streamVideo = null; // Resetear la variable
@@ -57,10 +58,10 @@ document.addEventListener("DOMContentLoaded", () =>{
                 console.warn("⚠️ No había una cámara activa para cerrar.");
             }
 
-            cameraBox.style.display = "none"; // no mostrar contenedor de la cámara
-            openCameraBtn.style.display = "block"; // mostrar botón de abrir cámara
-            captureBtn.style.display = "none"; // ocultar el botón capturar
-            noCaptureBtn.style.display = "none";
+            cameraBox.style.display = "none"; // No mostrar contenedor de la cámara
+            openCameraBtn.style.display = "block"; // Mostrar botón de abrir cámara
+            captureBtn.style.display = "none"; // Ocultar el botón capturar
+            noCaptureBtn.style.display = "none"; // Ocultar botón de cerrar captura
 
         } catch (error) {
             console.error("❌ Error al intentar cerrar la cámara:", error);
@@ -68,8 +69,7 @@ document.addEventListener("DOMContentLoaded", () =>{
         }
     }
 
-
-    // CAPTURAR LA IMAGEN Y CONVERTIRLA BASE64
+    // FUNCIÓN CAPTURAR LA IMAGEN Y CONVERTIRLA A BASE64
     function captureImage() {
         try {
             if (video.videoWidth > 0 && video.videoHeight > 0) { // Verifica si el video está cargado correctamente
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () =>{
                 canvas.width = video.videoWidth; // Propiedades que contienen el ancho real del video que proviene de la cámara.
                 canvas.height = video.videoHeight; // Propiedades que contienen el alto real del video.
 
-                // Dibujar la imagen del video en  <canvas>
+                // Dibujar la imagen del video en <canvas>
                 const context = canvas.getContext("2d"); // Obtiene el contexto 2D del canvas
                 context.drawImage(video, 0, 0, canvas.width, canvas.height); // Toma la foto del video y la dibuja en el canvas
 
@@ -110,8 +110,8 @@ document.addEventListener("DOMContentLoaded", () =>{
         }
     }
 
-    //Ejecutar funciones cuando se hacen clic en los botones
+    // Asignar eventos a los botones
     openCameraBtn.addEventListener("click", openCamera); // Cuando se presiona "Abrir Cámara"
     noCaptureBtn.addEventListener("click", closeCamera); // Cuando se presiona "Cerrar Cámara"
     captureBtn.addEventListener("click", captureImage); // Cuando se presiona "Capturar Foto"
-});
+}
