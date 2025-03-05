@@ -61,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () =>{
             openCameraBtn.style.display = "block"; // mostrar botón de abrir cámara
             captureBtn.style.display = "none"; // ocultar el botón capturar
             noCaptureBtn.style.display = "none";
-            previewImage.style.display = "none"; // ocultar la imagen de vista previa
 
         } catch (error) {
             console.error("❌ Error al intentar cerrar la cámara:", error);
