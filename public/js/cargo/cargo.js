@@ -4,42 +4,51 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 //datos desde la api
-function obtenerCargo(idCargo) {
-    return fetch(`/api/cargos/${idCargo}`)
-        .then(response => {
-            if (!response.ok) throw new Error("Cargo no encontrado");
-            return response.json();// Convierte la respuesta en JSON
-        });
+async function obtenerCargo(idCargo) {
+    try {
+        //petición GET al servidor
+        const response = await fetch(`/api/cargos/${idCargo}`);
+
+        //respuesta no es exitosa error
+        if (!response.ok) throw new Error("Cargo no encontrado");
+
+        return await response.json(); //Convierte la respuesta en JSON y la retorna
+    } catch (error) {
+        console.error("❌ Error en obtenerCargo:", error); //Muestra el error en la consola
+        throw error; // error con la funcion
+    }
 }
 
-//buscar id y mostar en ventana modal del html
-function buscarCargo() {
-    const idCargo = document.getElementById("buscarCargo").value.trim();// Convierte la respuesta en JSON
+// 📌 Función para buscar un cargo y mostrarlo en una ventana modal
+async function buscarCargo() {
+    try {
+        // ✅ Obtiene el ID ingresado en el input y lo limpia de espacios en blanco
+        const idCargo = document.getElementById("buscarCargo").value.trim();
 
-    //si es vacio
-    if (!idCargo) {
-        alert("⚠️ Ingrese un ID.");
-        return;
+        // ❌ Si el campo está vacío, muestra una alerta y detiene la ejecución
+        if (!idCargo) {
+            alert("⚠️ Ingrese un ID.");
+            return;
+        }
+
+        // ✅ Llama a la función que obtiene el cargo
+        const cargo = await obtenerCargo(idCargo);
+
+        // ✅ Si encuentra el cargo, asigna los valores obtenidos a los elementos del modal
+        document.getElementById("cargoId").innerText = cargo.id_cargo;
+        document.getElementById("cargoNombre").innerText = cargo.nombre_cargo;
+        document.getElementById("cargoDescripcion").innerText = cargo.descripcion || "Sin descripción";
+
+        // ✅ Muestra el modal
+        const modal = document.getElementById("modalCargo");
+        modal.classList.remove("hidden");
+        modal.style.display = "flex";
+
+    } catch (error) {
+        // ❌ Si ocurre un error (por ejemplo, el cargo no existe), limpia el campo de búsqueda y muestra alerta
+        document.getElementById("buscarCargo").value = "";
+        alert("❌ " + error.message);
     }
-
-    // Llama a la función 
-    obtenerCargo(idCargo)
-        .then(cargo => {
-              // Asigna los valores obtenidos
-            document.getElementById("cargoId").innerText = cargo.id_cargo;
-            document.getElementById("cargoNombre").innerText = cargo.nombre_cargo;
-            document.getElementById("cargoDescripcion").innerText = cargo.descripcion || "Sin descripción";
-
-            //mostrar modal
-            const modal = document.getElementById("modalCargo");
-            modal.classList.remove("hidden");
-            modal.style.display = "flex";
-        })
-        .catch(error => {
-            //si no se encuentra el cargo
-            document.getElementById("buscarCargo").value = "";
-            alert("❌ " + error.message);
-        });
 }
 
 
@@ -53,66 +62,80 @@ function cerrarModal() {
  
 
 // 📌 Cargar todos los cargos en la tabla
-function cargarTodosLosCargos() {
-    fetch('/api/cargos')
-        .then(response => {
-            if (!response.ok) throw new Error("Error al obtener los cargos");
-            return response.json();
-        })
-        .then(data => {
-            const tableBody = document.getElementById("cargoTable");
-            tableBody.innerHTML = ""; // Limpiar la tabla antes de agregar los datos
+async function cargarTodosLosCargos() {
+    try {
+        // Realiza la petición a la API para obtener todos los cargos
+        const response = await fetch('/api/cargos');
 
-            data.forEach(cargo => {
-                let row = document.createElement("tr");
+        // Verifica si la respuesta es correcta
+        if (!response.ok) {
+            throw new Error("Error al obtener los cargos");
+        }
 
-                row.innerHTML = `
-                    <td class="border border-black p-2">${cargo.id_cargo}</td>
-                    <td class="border border-black p-2">${cargo.nombre_cargo}</td>
-                    <td class="border border-black p-2">${cargo.descripcion || "N/A"}</td>
-                    <td class="border border-black p-2">
-                        <button class="boton boton-editar" data-id="${cargo.id_cargo}">✏️ Editar</button>
-                        <button class="boton boton-eliminar" data-id="${cargo.id_cargo}">🗑 Eliminar</button>
-                    </td>
-                `;
+        // Convierte la respuesta a JSON
+        const data = await response.json();
 
-                // Agregar eventos a botones
-                row.querySelector(".boton-eliminar").addEventListener("click", function () {
-                    eliminarCargo(this.dataset.id);
-                });
+        // Selecciona la tabla donde se mostrarán los cargos
+        const tableBody = document.getElementById("cargoTable");
+        tableBody.innerHTML = ""; // Limpiar la tabla antes de agregar nuevos datos
 
-                row.querySelector(".boton-editar").addEventListener("click", function () {
-                    editarCargo(this.dataset.id);
-                });
+        // Recorre los cargos obtenidos y los agrega a la tabla
+        data.forEach(cargo => {
+            let row = document.createElement("tr");
 
-                tableBody.appendChild(row);
+            row.innerHTML = `
+                <td class="border border-black p-2">${cargo.id_cargo}</td>
+                <td class="border border-black p-2">${cargo.nombre_cargo}</td>
+                <td class="border border-black p-2">${cargo.descripcion || "N/A"}</td>
+                <td class="border border-black p-2">
+                    <button class="boton boton-editar" data-id="${cargo.id_cargo}">✏️ Editar</button>
+                    <button class="boton boton-eliminar" data-id="${cargo.id_cargo}">🗑 Eliminar</button>
+                </td>
+            `;
+
+            // Agregar eventos a los botones de edición y eliminación
+            row.querySelector(".boton-eliminar").addEventListener("click", function () {
+                eliminarCargo(this.dataset.id);
             });
-        })
-        .catch(error => {
-            console.error(error);
-            document.getElementById("cargoTable").innerHTML =
-                `<tr><td colspan="4" class="border border-black p-2 text-red-500">❌ Error al cargar los datos</td></tr>`;
+
+            row.querySelector(".boton-editar").addEventListener("click", function () {
+                editarCargo(this.dataset.id);
+            });
+
+            // Añadir la fila a la tabla
+            tableBody.appendChild(row);
         });
-}
 
-// ❌ Eliminar un cargo
-function eliminarCargo(id) {
-    if (confirm("¿Seguro que deseas eliminar este cargo?")) {
-        fetch(`/api/cargos/${id}`, { method: "DELETE" })
-            .then(response => {
-                if (!response.ok) throw new Error("Error al eliminar el cargo");
-                return response.json();
-            })
-            .then(() => {
-                alert("✅ Cargo eliminado correctamente.");
-                cargarTodosLosCargos(); // Recargar la tabla
-            })
-            .catch(error => {
-                console.error(error);
-                alert("❌ Error al eliminar el cargo.");
-            });
+    } catch (error) {
+        console.error("❌ Error en cargarTodosLosCargos:", error);
+
+        // Mostrar un mensaje de error en la tabla si la carga falla
+        document.getElementById("cargoTable").innerHTML =
+            `<tr><td colspan="4" class="border border-black p-2 text-red-500">❌ Error al cargar los datos</td></tr>`;
     }
 }
+
+
+// ❌ Eliminar un cargo
+async function eliminarCargo(id) {
+    // cuadro de confirmación antes de eliminar
+    if (!confirm("¿Seguro que deseas eliminar este cargo?")) return;
+
+    try {
+        //Realiza la petición DELETE al servidor con ID 
+        const response = await fetch(`/api/cargos/${id}`, { method: "DELETE" });
+
+        // si no  lanza un error
+        if (!response.ok) throw new Error("Error al eliminar el cargo");
+
+        alert("✅ Cargo eliminado correctamente."); // Muestra mensaje de éxito
+        cargarTodosLosCargos(); // Recarga la tabla de cargos
+    } catch (error) {
+        console.error(error); //Mostrar el error en la consola
+        alert("❌ Error al eliminar el cargo."); // Mostrar alerta de error
+    }
+}
+
 
 //EDITAR CARGO
 async function editarCargo(id) {

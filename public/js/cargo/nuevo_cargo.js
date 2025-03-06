@@ -4,37 +4,45 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 //funcion agregar cargo y redireccionar al cargo
-function agregarCargo() {
-    const nombre_cargo = document.getElementById("nombre_cargo").value.trim();
-    const descripcion = document.getElementById("descripcion").value.trim();
-    const mensaje = document.getElementById("mensaje");
+async function agregarCargo() {
+    try {
+        // obtener valores del formulario y limpiar con trim
+        const nombre_cargo = document.getElementById("nombre_cargo").value.trim();
+        const descripcion = document.getElementById("descripcion").value.trim();
+        const mensaje = document.getElementById("mensaje");
 
-    // Limpiar el mensaje antes de cualquier validación
-    mensaje.innerText = "";
-    
-    if (!nombre_cargo || !descripcion) {
-        mensaje.innerText = "⚠️ Todos los campos son obligatorios.";
-        mensaje.style.color = "red";
-        return;
-    }
+        // Limpia el mensaje antes de cualquier validación
+        mensaje.innerText = "";
 
-    fetch("/api/cargos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre_cargo, descripcion }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        mensaje.innerText = data.message;
+        // campo está vacío, mensaje de error y detiene la ejecución
+        if (!nombre_cargo || !descripcion) {
+            mensaje.innerText = "⚠️ Todos los campos son obligatorios.";
+            mensaje.style.color = "red";
+            return;
+        }
+
+        // petición POST 
+        const response = await fetch("/api/cargos", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nombre_cargo, descripcion }), //Convertir objeto a formato JSON
+        });
+
+        // Si no es exitosa, lanza un error
+        if (!response.ok) throw new Error("Error al agregar el cargo");
+
+        const data = await response.json(); // convertir la respuesta en JSON
+
+        mensaje.innerText = data.message;//mensaje del back
         mensaje.style.color = "green";
 
+        //Redirige a "cargo.html" después de 1 segundo
         setTimeout(() => {
-            window.location.href = "cargo.html"; // Redirige tras 2 seg
+            window.location.href = "cargo.html";
         }, 1000);
-    })
-    .catch(error => {
-        console.error(error);
+    } catch (error) {
+        console.error("❌ Error en agregarCargo:", error);
         mensaje.innerText = "❌ Error al agregar el cargo.";
         mensaje.style.color = "red";
-    });
+    }
 }
