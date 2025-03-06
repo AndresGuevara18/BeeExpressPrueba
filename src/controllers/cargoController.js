@@ -1,10 +1,14 @@
 const Cargo = require('../models/cargoModel');
 const cargoService = require('../services/cargoServices'); // Importar el servicio de cargo
 
+/*
+req: Objeto de solicitud (request), que contiene datos enviados por el cliente.
+res: Objeto de respuesta (response), que se usa para devolver una respuesta al cliente.
+*/
+
 // Objeto que contendrá los métodos del controlador
 const cargoController = {
 
-    // Método para obtener todos los cargos
     // Método para obtener todos los cargos
     getAllCargos: async (req, res) => {
         try {
@@ -25,7 +29,7 @@ const cargoController = {
                 return res.status(404).json({ error: "Cargo no encontrado" }); // Si no se encuentra, devolvemos error 404
             }
 
-            res.json(cargo); // Si se encuentra, lo enviamos en formato JSON
+            res.json(cargo); // Si se encuentra, se envia formato json
         } catch (error) {
             res.status(500).json({ error: "Error al buscar el cargo en el controlador" }); // Manejo de error en la consulta
         }
@@ -52,8 +56,8 @@ const cargoController = {
     // Método para actualizar un cargo
     updateCargo: async (req, res) => {
         try {
-            const { id_cargo } = req.params;
-            const { nombre_cargo, descripcion } = req.body;
+            const { id_cargo } = req.params;//id de la  api 
+            const { nombre_cargo, descripcion } = req.body;//cuerpo de la solicitud "put"
         
             if (!nombre_cargo || !descripcion) {
                 return res.status(400).json({ error: "Todos los campos son obligatorios" });

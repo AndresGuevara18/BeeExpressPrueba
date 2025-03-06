@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
     getAllUsuarios(); // Cargar usuarios automáticamente al cargar la página
-    createUser(); // Inicializar el formulario de registro si está presente
 });
 
 // 🔹 Función para obtener y mostrar la lista de usuarios

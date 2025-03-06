@@ -1,36 +1,47 @@
 // 📌 Cargar todos los cargos al iniciar
 document.addEventListener("DOMContentLoaded", function () {
     cargarTodosLosCargos();
-    document.getElementById("btnAgregarCargo").addEventListener("click", agregarCargo);
 });
 
-// 🔍 Buscar cargo por ID y mostrarlo en el modal
-function buscarCargo() {
-    const idCargo = document.getElementById("buscarCargo").value.trim();
+//datos desde la api
+function obtenerCargo(idCargo) {
+    return fetch(`/api/cargos/${idCargo}`)
+        .then(response => {
+            if (!response.ok) throw new Error("Cargo no encontrado");
+            return response.json();// Convierte la respuesta en JSON
+        });
+}
 
+//buscar id y mostar en ventana modal del html
+function buscarCargo() {
+    const idCargo = document.getElementById("buscarCargo").value.trim();// Convierte la respuesta en JSON
+
+    //si es vacio
     if (!idCargo) {
-        alert("⚠️ Ingrese un ID de cargo válido.");
+        alert("⚠️ Ingrese un ID.");
         return;
     }
 
-    fetch(`/api/cargos/${idCargo}`)
-        .then(response => {
-            if (!response.ok) throw new Error("Cargo no encontrado");
-            return response.json();
-        })
+    // Llama a la función 
+    obtenerCargo(idCargo)
         .then(cargo => {
+              // Asigna los valores obtenidos
             document.getElementById("cargoId").innerText = cargo.id_cargo;
             document.getElementById("cargoNombre").innerText = cargo.nombre_cargo;
             document.getElementById("cargoDescripcion").innerText = cargo.descripcion || "Sin descripción";
 
+            //mostrar modal
             const modal = document.getElementById("modalCargo");
             modal.classList.remove("hidden");
             modal.style.display = "flex";
         })
         .catch(error => {
+            //si no se encuentra el cargo
+            document.getElementById("buscarCargo").value = "";
             alert("❌ " + error.message);
         });
 }
+
 
 // ❌ Cerrar modal
 function cerrarModal() {
@@ -40,38 +51,6 @@ function cerrarModal() {
     document.getElementById("buscarCargo").value = "";
 }
  
-//funcion agregar cargo y redireccionar al cargo
-function agregarCargo() {
-    const nombre_cargo = document.getElementById("nombre_cargo").value.trim();
-    const descripcion = document.getElementById("descripcion").value.trim();
-    const mensaje = document.getElementById("mensaje");
-
-    if (!nombre_cargo || !descripcion) {
-        mensaje.innerText = "⚠️ Todos los campos son obligatorios.";
-        mensaje.style.color = "red";
-        return;
-    }
-
-    fetch("/api/cargos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre_cargo, descripcion }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        mensaje.innerText = data.message;
-        mensaje.style.color = "green";
-
-        setTimeout(() => {
-            window.location.href = "cargo.html"; // Redirige tras 2 seg
-        }, 1000);
-    })
-    .catch(error => {
-        console.error(error);
-        mensaje.innerText = "❌ Error al agregar el cargo.";
-        mensaje.style.color = "red";
-    });
-}
 
 // 📌 Cargar todos los cargos en la tabla
 function cargarTodosLosCargos() {
@@ -86,7 +65,6 @@ function cargarTodosLosCargos() {
 
             data.forEach(cargo => {
                 let row = document.createElement("tr");
-                row.className = "odd:bg-white even:bg-gray-200";
 
                 row.innerHTML = `
                     <td class="border border-black p-2">${cargo.id_cargo}</td>
@@ -136,31 +114,42 @@ function eliminarCargo(id) {
     }
 }
 
-// ✏️ Editar un cargo
-function editarCargo(id) {
-    const nuevoNombre = prompt("Nuevo nombre del cargo:");
-    const nuevaDescripcion = prompt("Nueva descripción del cargo:");
+//EDITAR CARGO
+async function editarCargo(id) {
+    try {
+        //Obtener  datos del cargo
+        const cargo = await obtenerCargo(id);
 
-    if (!nuevoNombre || !nuevaDescripcion) {
-        alert("⚠️ Debes ingresar todos los datos.");
-        return;
-    }
+        //Mostramos  prompt con los valores actuales 
+        const nuevoNombre = prompt("Nuevo nombre del cargo:", cargo.nombre_cargo);
+        const nuevaDescripcion = prompt("Nueva descripción del cargo:", cargo.descripcion || "");
 
-    fetch(`/api/cargos/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre_cargo: nuevoNombre, descripcion: nuevaDescripcion }),
-    })
-    .then(response => {
+        //Si el usuario cancela sale
+        if (nuevoNombre === null || nuevaDescripcion === null) return;
+
+        // campos no estén vacíos
+        if (!nuevoNombre.trim() || !nuevaDescripcion.trim()) {//.trim() elimina los espacios en blanco al inicio y al final 
+            alert("⚠️ Debes ingresar todos los datos.");
+            return;
+        }
+
+        // Enviar la actualización a la API
+        const response = await fetch(`/api/cargos/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nombre_cargo: nuevoNombre, descripcion: nuevaDescripcion }),// convertircadena de texto JSON
+        });
+
+        //si hay errores
         if (!response.ok) throw new Error("Error al actualizar el cargo");
-        return response.json();
-    })
-    .then(() => {
+
         alert("✅ Cargo actualizado correctamente.");
-        cargarTodosLosCargos(); // Recargar la tabla
-    })
-    .catch(error => {
-        console.error(error);
+        cargarTodosLosCargos(); // Recargar la lista 
+    } catch (error) {
+        console.error("❌ Error en editarCargo:", error);
         alert("❌ Error al actualizar el cargo.");
-    });
+    }
 }
+
+
+

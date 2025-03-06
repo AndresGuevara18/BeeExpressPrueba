@@ -1,6 +1,8 @@
-// js/usuario/camara.js
+document.addEventListener("DOMContentLoaded", () => {
+    initializeCamera(); // Cargar usuarios automáticamente al cargar la página
+});
 
-export function initializeCamera() {
+function initializeCamera() {
     // Capturar elementos del HTML mediante el ID
     const openCameraBtn = document.getElementById("openCameraBtn"); // Botón abrir la cámara
     const cameraBox = document.getElementById("cameraBox"); // Contenedor para la cámara
@@ -58,7 +60,7 @@ export function initializeCamera() {
                 console.warn("⚠️ No había una cámara activa para cerrar.");
             }
 
-            cameraBox.style.display = "none"; // No mostrar contenedor de la cámara
+            cameraBox.style.display = "none"; // ocultar contenedor de la cámara
             openCameraBtn.style.display = "block"; // Mostrar botón de abrir cámara
             captureBtn.style.display = "none"; // Ocultar el botón capturar
             noCaptureBtn.style.display = "none"; // Ocultar botón de cerrar captura

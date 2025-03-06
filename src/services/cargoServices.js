@@ -35,7 +35,7 @@ const cargoService = {
     // Consulta SQL para insertar un nuevo cargo
     try {
         const [result] = await db.promise().query(query, [cargoData.getNombreCargo(), cargoData.getDescripcion()]);
-        // Insertamos los valores usando los getters de Cargo
+        // Insertar valores usando los getters de Cargo
 
         return new Cargo(result.insertId, cargoData.getNombreCargo(), cargoData.getDescripcion());
         // Creamos un nuevo objeto Cargo con el ID generado
@@ -45,7 +45,7 @@ const cargoService = {
     },
 
     updateCargo: async (id_cargo, nombre_cargo, descripcion) => {
-        const query = `UPDATE cargo SET nombre_cargo = ?, descripcion = ? WHERE id_cargo = ?`;
+        const query = `UPDATE cargo SET nombre_cargo = ?, descripcion = ? WHERE id_cargo = ?`;//consulta sql
         
         try {
             const [result] = await db.promise().query(query, [nombre_cargo, descripcion, id_cargo]);
