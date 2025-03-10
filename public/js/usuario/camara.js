@@ -10,10 +10,10 @@ function initializeCamera() {
     const captureBtn = document.getElementById("captureBtn"); // Capturar la foto
     const noCaptureBtn = document.getElementById("noCaptureBtn"); // Cerrar capturar foto
     const canvas = document.getElementById("canvas"); // Se dibujará la imagen capturada
-    const fotoBase64 = document.getElementById("fotoBase64"); // Oculto donde se guardará la imagen en base 64
     const previewImage = document.getElementById("previewImage"); // Campo para la vista de la imagen
 
     let streamVideo = null; // Almacenar el flujo de video de la cámara
+    let capturedBlob = null; // Variable para almacenar el Blob capturado
 
     // FUNCIÓN ABRIR CÁMARA
     function openCamera() {
@@ -60,7 +60,7 @@ function initializeCamera() {
                 console.warn("⚠️ No había una cámara activa para cerrar.");
             }
 
-            cameraBox.style.display = "none"; // ocultar contenedor de la cámara
+            cameraBox.style.display = "none"; // Ocultar contenedor de la cámara
             openCameraBtn.style.display = "block"; // Mostrar botón de abrir cámara
             captureBtn.style.display = "none"; // Ocultar el botón capturar
             noCaptureBtn.style.display = "none"; // Ocultar botón de cerrar captura
@@ -71,7 +71,7 @@ function initializeCamera() {
         }
     }
 
-    // FUNCIÓN CAPTURAR LA IMAGEN Y CONVERTIRLA A BASE64
+    // FUNCIÓN CAPTURAR LA IMAGEN Y CONVERTIRLA A BLOB
     function captureImage() {
         try {
             if (video.videoWidth > 0 && video.videoHeight > 0) { // Verifica si el video está cargado correctamente
@@ -83,25 +83,32 @@ function initializeCamera() {
                 const context = canvas.getContext("2d"); // Obtiene el contexto 2D del canvas
                 context.drawImage(video, 0, 0, canvas.width, canvas.height); // Toma la foto del video y la dibuja en el canvas
 
-                // Convertir la imagen a formato Base64
-                const imageBase64 = canvas.toDataURL("image/png"); // Convertir el contenido del canvas en imagen codificada en Base64.
-                fotoBase64.value = imageBase64; // Guardar en el input oculto
+                // Convertir la imagen a formato Blob
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        capturedBlob = blob; // Almacenar el Blob en la variable global
 
-                // Mostrar la vista previa de la imagen capturada
-                previewImage.src = imageBase64; // Asignar la imagen capturada como src del previewImage
-                previewImage.style.display = "block"; // Asegurar que la imagen se muestre
+                        // Mostrar la vista previa de la imagen capturada
+                        const imageUrl = URL.createObjectURL(blob); // Crear una URL para el Blob
+                        previewImage.src = imageUrl; // Asignar la URL al src de la imagen de vista previa
+                        previewImage.style.display = "block"; // Asegurar que la imagen se muestre
 
-                // Ocultar la cámara y mostrar botón de abrir cámara nuevamente
-                cameraBox.style.display = "none"; // No mostrar contenedor de la cámara
-                openCameraBtn.style.display = "block"; // Mostrar botón de abrir cámara
-                captureBtn.style.display = "none"; // Ocultar el botón capturar
-                noCaptureBtn.style.display = "none"; // Ocultar botón de cerrar captura
+                        // Ocultar la cámara y mostrar botón de abrir cámara nuevamente
+                        cameraBox.style.display = "none"; // No mostrar contenedor de la cámara
+                        openCameraBtn.style.display = "block"; // Mostrar botón de abrir cámara
+                        captureBtn.style.display = "none"; // Ocultar el botón capturar
+                        noCaptureBtn.style.display = "none"; // Ocultar botón de cerrar captura
 
-                alert("✅ Imagen capturada correctamente.");
-                console.log("✅ Imagen capturada correctamente:", imageBase64); // Mensaje en consola cuando la imagen se captura correctamente
+                        alert("✅ Imagen capturada correctamente.");
+                        console.log("✅ Imagen capturada correctamente:", blob); // Mensaje en consola cuando la imagen se captura correctamente
 
-                // Cerrar la cámara después de capturar la imagen
-                closeCamera();
+                        // Cerrar la cámara después de capturar la imagen
+                        closeCamera();
+                    } else {
+                        console.error("❌ No se pudo crear el Blob.");
+                        alert("❌ Ocurrió un error al capturar la imagen.");
+                    }
+                }, "image/png"); // Puedes cambiar el formato a "image/jpeg" si prefieres
             } else {
                 console.warn("⚠️ No se pudo capturar la imagen porque el video no está cargado.");
                 alert(" ⚠️ No se puede capturar la imagen, asegúrate de que la cámara está activa.");
