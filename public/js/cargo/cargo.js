@@ -63,10 +63,10 @@ function cerrarModal() {
 //Cargar todos los cargos en la tabla
 async function cargarTodosLosCargos() {
     try {
-        // Realiza la petición a la API para obtener todos los cargos
+        // Realiza la petición a la API 
         const response = await fetch('/api/cargos');
 
-        // Verifica si la respuesta es correcta
+        // Verifica si la respuesta 
         if (!response.ok) {
             throw new Error("Error al obtener los cargos");
         }
@@ -74,7 +74,7 @@ async function cargarTodosLosCargos() {
         // Convierte la respuesta a JSON
         const data = await response.json();
 
-        // Selecciona la tabla donde se mostrarán los cargos
+        // Selecciona la tabla 
         const tableBody = document.getElementById("cargoTable");
         tableBody.innerHTML = ""; // Limpiar la tabla antes de agregar nuevos datos
 
@@ -121,7 +121,7 @@ async function eliminarCargo(id) {
     if (!confirm("¿Seguro que deseas eliminar este cargo?")) return;
 
     try {
-        //Realiza la petición DELETE al servidor con ID 
+        // petición DELETE al servidor con ID 
         const response = await fetch(`/api/cargos/${id}`, { method: "DELETE" });
 
         // si no  lanza un error
@@ -155,7 +155,7 @@ async function editarCargo(id) {
             return;
         }
 
-        // Enviar la actualización a la API
+        // peticion actualización a la API
         const response = await fetch(`/api/cargos/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },

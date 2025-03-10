@@ -60,7 +60,27 @@ const usuarioService = {
         } catch (err) {
             throw new Error("❌ Error al crear el usuario: " + err.message);
         }
+    },
+
+
+    //ELIMINAR USUARIO
+    deleteUser: async (id_usuario) => {
+        try {
+            //Eliminar reconocimiento facial
+            await db.promise().query('DELETE FROM reconocimiento_facial WHERE id_usuario = ?', [id_usuario]);
+    
+            //eliminar el usuario
+            const [result] = await db.promise().query('DELETE FROM usuario WHERE id_usuario = ?', [id_usuario]);
+            
+            if (result.affectedRows === 0) return null;
+            
+            return { message: 'Usuario eliminado correctamente' };
+        } catch (err) {
+            console.error("❌ Error eliminar usuario servicio:", err);
+            throw err;
+        }
     }
+    
 };
 
 module.exports = usuarioService; // Exportamos el servicio

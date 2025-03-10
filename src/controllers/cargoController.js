@@ -79,7 +79,7 @@ const cargoController = {
     // Método para eliminar un cargo
     deleteCargo: async (req, res) => {
         try {
-            const { id_cargo } = req.params; // Extraemos el ID del cargo desde la URL
+            const { id_cargo } = req.params; // Extraer el ID del cargo desde la URL
             const resultado = await cargoService.deleteCargo(id_cargo); // Llamamos al servicio para eliminar
 
             if (!resultado) {

@@ -43,3 +43,25 @@ function getAllUsuarios() {
         });
 }
 
+async function eliminarUsuario(id_usuario) {
+    try {
+        const confirmacion = confirm("¿Estás seguro de que deseas eliminar este usuario?");
+        if (!confirmacion) return; // Si el usuario cancela, no se ejecuta nada
+
+        const response = await fetch(`/api/usuarios/${id_usuario}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            throw new Error("Error al eliminar usuario");
+        }
+
+        const data = await response.json();
+        alert(data.message); // Muestra el mensaje del backend
+        getAllUsuarios(); // Recargar la lista después de eliminar
+
+    } catch (error) {
+        console.error("❌ Error al eliminar usuario:", error);
+        alert("Error al eliminar usuario");
+    }
+}

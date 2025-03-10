@@ -27,6 +27,25 @@ const usuarioController = {
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
+    },
+
+
+    //ELIMINAR USAURIO
+    deleteUser: async (req, res) =>{
+        try {
+            const {id_usuario} = req.params; //Extraer el  ID desde la url
+            const resultado = await usuarioService.deleteUser(id_usuario); //llamado servicio
+
+            if (!resultado) {
+                return res.status(404).json({ error: "Usuario no encontrado" });
+            }
+
+            res.json({ message: "✅ Usuario eliminado correctamente" });
+
+        } catch (error) {
+            console.error("❌Error en deleteUser:", error);
+            res.status(500).json({ error: "❌Error al eliminar el usuario" }); // Manejo de errores
+        }
     }
 };
 
