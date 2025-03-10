@@ -1,4 +1,4 @@
-// 📌 Cargar todos los cargos al iniciar
+//todos los cargos al iniciar
 document.addEventListener("DOMContentLoaded", function () {
     cargarTodosLosCargos();
 });
@@ -19,40 +19,39 @@ async function obtenerCargo(idCargo) {
     }
 }
 
-// 📌 Función para buscar un cargo y mostrarlo en una ventana modal
+//buscar un cargo y mostrarlo en una ventana modal
 async function buscarCargo() {
     try {
-        // ✅ Obtiene el ID ingresado en el input y lo limpia de espacios en blanco
+        // Obtiene el ID ingresado en el input
         const idCargo = document.getElementById("buscarCargo").value.trim();
 
-        // ❌ Si el campo está vacío, muestra una alerta y detiene la ejecución
+        //Si  está vacío, 
         if (!idCargo) {
             alert("⚠️ Ingrese un ID.");
             return;
         }
 
-        // ✅ Llama a la función que obtiene el cargo
+        // Llama a la función 
         const cargo = await obtenerCargo(idCargo);
 
-        // ✅ Si encuentra el cargo, asigna los valores obtenidos a los elementos del modal
+        //Si encuentra el cargo, asigna los valores obtenidos a los elementos del modal
         document.getElementById("cargoId").innerText = cargo.id_cargo;
         document.getElementById("cargoNombre").innerText = cargo.nombre_cargo;
         document.getElementById("cargoDescripcion").innerText = cargo.descripcion || "Sin descripción";
 
-        // ✅ Muestra el modal
+        // Muestra el modal
         const modal = document.getElementById("modalCargo");
         modal.classList.remove("hidden");
         modal.style.display = "flex";
 
     } catch (error) {
-        // ❌ Si ocurre un error (por ejemplo, el cargo no existe), limpia el campo de búsqueda y muestra alerta
-        document.getElementById("buscarCargo").value = "";
+        document.getElementById("buscarCargo").value = "";//error
         alert("❌ " + error.message);
     }
 }
 
 
-// ❌ Cerrar modal
+// Cerrar modal
 function cerrarModal() {
     document.getElementById("modalCargo").classList.add("hidden");
     document.getElementById("modalCargo").style.display = "none";
@@ -61,7 +60,7 @@ function cerrarModal() {
 }
  
 
-// 📌 Cargar todos los cargos en la tabla
+//Cargar todos los cargos en la tabla
 async function cargarTodosLosCargos() {
     try {
         // Realiza la petición a la API para obtener todos los cargos
@@ -95,11 +94,11 @@ async function cargarTodosLosCargos() {
 
             // Agregar eventos a los botones de edición y eliminación
             row.querySelector(".boton-eliminar").addEventListener("click", function () {
-                eliminarCargo(this.dataset.id);
+                eliminarCargo(this.dataset.id);// this.dataset.id captura el valor de data-id
             });
 
             row.querySelector(".boton-editar").addEventListener("click", function () {
-                editarCargo(this.dataset.id);
+                editarCargo(this.dataset.id);// this.dataset.id captura el valor de data-id
             });
 
             // Añadir la fila a la tabla
@@ -109,7 +108,7 @@ async function cargarTodosLosCargos() {
     } catch (error) {
         console.error("❌ Error en cargarTodosLosCargos:", error);
 
-        // Mostrar un mensaje de error en la tabla si la carga falla
+        // Mostrar un mensaje de error en la tabla
         document.getElementById("cargoTable").innerHTML =
             `<tr><td colspan="4" class="border border-black p-2 text-red-500">❌ Error al cargar los datos</td></tr>`;
     }
@@ -143,11 +142,11 @@ async function editarCargo(id) {
         //Obtener  datos del cargo
         const cargo = await obtenerCargo(id);
 
-        //Mostramos  prompt con los valores actuales 
+        //prompt con los valores actuales 
         const nuevoNombre = prompt("Nuevo nombre del cargo:", cargo.nombre_cargo);
         const nuevaDescripcion = prompt("Nueva descripción del cargo:", cargo.descripcion || "");
 
-        //Si el usuario cancela sale
+        //Si cancela 
         if (nuevoNombre === null || nuevaDescripcion === null) return;
 
         // campos no estén vacíos

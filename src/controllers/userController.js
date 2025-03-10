@@ -1,7 +1,7 @@
 const usuarioService = require('../services/userServices'); // Importar el servicio de usuario
 
 const usuarioController = {
-    // 🔹 Obtener todos los usuarios
+    //todos los usuarios
     getAllUsers: (req, res) => {
         usuarioService.getAllUsers((err, usuarios) => {
             if (err) {
@@ -12,7 +12,7 @@ const usuarioController = {
         });
     },
 
-    // 🔹 Crear un nuevo usuario
+    // nuevo usuario
     createUser: async (req, res) => {
         try {
             const usuarioData = req.body;
@@ -21,7 +21,7 @@ const usuarioController = {
             const nuevoUsuario = await usuarioService.createUser(usuarioData, fotoBuffer);
 
             res.status(201).json({
-                message: "✅ Usuario creado exitosamente.",
+                message: "Imagen Usuario creado exitosamente.",
                 usuario: nuevoUsuario
             });
         } catch (error) {

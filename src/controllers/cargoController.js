@@ -9,24 +9,24 @@ res: Objeto de respuesta (response), que se usa para devolver una respuesta al c
 // Objeto que contendrá los métodos del controlador
 const cargoController = {
 
-    // Método para obtener todos los cargos
+    //obtener todos los cargos
     getAllCargos: async (req, res) => {
         try {
-            const cargos = await cargoService.getAllCargos(); // Llamamos al servicio que obtiene todos los cargos
-            res.json(cargos); // Enviamos la lista de cargos en formato JSON
+            const cargos = await cargoService.getAllCargos(); // llamada servicio
+            res.json(cargos); //  lista en formato JSON
         } catch (error) {
-            res.status(500).json({ error: "Error al obtener los cargos" }); // Si hay error, respondemos con código 500
+            res.status(500).json({ error: "Error al obtener los cargos" }); // error
         }
     }, 
 
-    // Método para obtener un cargo por su ID
+    //cargo por ID
     getCargoById: async (req, res) => {
         try {
-            const { id_cargo } = req.params; // Extraemos el ID de los parámetros de la URL
-            const cargo = await cargoService.getCargoById(id_cargo); // Llamamos al servicio para buscar el cargo
+            const { id_cargo } = req.params; // ID de los parámetros de la URL
+            const cargo = await cargoService.getCargoById(id_cargo); // Llamar al servicio
 
             if (!cargo) {
-                return res.status(404).json({ error: "Cargo no encontrado" }); // Si no se encuentra, devolvemos error 404
+                return res.status(404).json({ error: "Cargo no encontrado" }); // Si no se encuentra
             }
 
             res.json(cargo); // Si se encuentra, se envia formato json

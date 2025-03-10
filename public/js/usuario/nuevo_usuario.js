@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     createUser(); // Inicializar el formulario de registro si está presente
 });
 
-// 🔹 Función para manejar el registro de usuarios
+//Función para manejar el registro de usuarios
 function createUser() {
     const form = document.getElementById("userForm");
 
@@ -12,9 +12,9 @@ function createUser() {
     }
 
     form.addEventListener("submit", async (event) => {
-        event.preventDefault(); // Evita que la página se recargue automáticamente
+        event.preventDefault(); 
 
-        // Captura los valores del formulario y los almacena en un objeto
+        // Capturar valores del formulario y almacenar en un objeto
         const usuarioData = {
             tipo_documento: document.getElementById("tipo_documento").value,
             numero_documento: document.getElementById("numero_documento").value,

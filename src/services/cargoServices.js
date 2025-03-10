@@ -4,46 +4,47 @@ const Cargo = require('../models/cargoModel'); // Importa el modelo Cargo
 const cargoService = {
     // Obtener todos los cargos
     getAllCargos: async () => {
-        const query = 'SELECT * FROM cargo'; // Consulta SQL para obtener todos los cargos
+        const query = 'SELECT * FROM cargo'; // Consulta SQL
         try {
             const [results] = await db.promise().query(query); // Ejecutamos la consulta con promesas
             return results.map(row => new Cargo(row.id_cargo, row.nombre_cargo, row.descripcion)); 
-            // Convertimos cada fila del resultado en una instancia de Cargo
+            // Converti cada fila del resultado en una instancia de Cargo
         } catch (err) {
-            throw err; // Si hay un error, lo propagamos para que lo maneje el controlador
+            throw err; // error,lo maneje el controlador
         }
     },
 
     // Obtener un cargo por ID
     getCargoById: async (id_cargo) => {
-        const query = 'SELECT * FROM cargo WHERE id_cargo = ?'; // Consulta SQL con filtro por ID
+        const query = 'SELECT * FROM cargo WHERE id_cargo = ?'; // Consulta SQL
         try {
-            const [results] = await db.promise().query(query, [id_cargo]); // Ejecutamos la consulta con el ID como parámetro
+            const [results] = await db.promise().query(query, [id_cargo]); // Ejecuta consulta con el ID como parámetro
 
-            if (results.length === 0) return null; // Si no se encuentra el cargo, devolvemos null
-
+            if (results.length === 0) return null; // Si no se encuentra
+            
+            //obtiene los valores de esa fila.
             return new Cargo(results[0].id_cargo, results[0].nombre_cargo, results[0].descripcion);
-            // Convertimos el primer resultado en una instancia de Cargo
+o
         } catch (err) {
             throw err; // Propagamos el error para que lo maneje el controlador
         }
     },
 
-   // Crear un nuevo cargo
+   // Crear 
    createCargo: async (cargoData) => {
-    const query = 'INSERT INTO cargo (nombre_cargo, descripcion) VALUES (?, ?)'; 
-    // Consulta SQL para insertar un nuevo cargo
+    const query = 'INSERT INTO cargo (nombre_cargo, descripcion) VALUES (?, ?)'; //consulta
     try {
+        // Insertar valores usando los getters
         const [result] = await db.promise().query(query, [cargoData.getNombreCargo(), cargoData.getDescripcion()]);
-        // Insertar valores usando los getters de Cargo
-
+        // Crea un nuevo objeto con el ID generado
         return new Cargo(result.insertId, cargoData.getNombreCargo(), cargoData.getDescripcion());
-        // Creamos un nuevo objeto Cargo con el ID generado
+  
     } catch (err) {
-        throw err; // Propagamos el error
+        throw err; // error
     }
     },
 
+    //actualizar
     updateCargo: async (id_cargo, nombre_cargo, descripcion) => {
         const query = `UPDATE cargo SET nombre_cargo = ?, descripcion = ? WHERE id_cargo = ?`;//consulta sql
         
@@ -55,17 +56,18 @@ const cargoService = {
             throw err;
         }
     },
+
      // Eliminar un cargo
      deleteCargo: async (id_cargo) => {
-        const query = 'DELETE FROM cargo WHERE id_cargo = ?'; // Consulta SQL para eliminar un cargo por ID
+        const query = 'DELETE FROM cargo WHERE id_cargo = ?'; // Consulta SQL
         try {
             const [result] = await db.promise().query(query, [id_cargo]);
 
-            if (result.affectedRows === 0) return null; // Si no se eliminó nada, el cargo no existe
+            if (result.affectedRows === 0) return null; // el cargo no existe
 
             return { message: 'Cargo eliminado correctamente' }; // Retornamos un mensaje de éxito
         } catch (err) {
-            throw err; // Propagamos el error
+            throw err; // error
         }
     }
 

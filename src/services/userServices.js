@@ -18,28 +18,30 @@ const usuarioService = {
         });
     },
 
-    // 🔹 Crear un usuario y agregarlo a la base de datos
+    //nuevo usuario 
     createUser: async (usuarioData) => {
-        // ✅ Creamos una instancia del usuario con los datos recibidos
+        //instancia del usuario con los datos recibidos
         const usuario = new Usuario( null, usuarioData.tipo_documento, usuarioData.numero_documento, 
             usuarioData.nombre_empleado, usuarioData.email_empleado, usuarioData.contrasena, 
             usuarioData.id_cargo);
 
-        // ⚠️ Verificar si el usuario ya existe (evita duplicados)
+        // Verificar si el usuario ya existe 
+        //consulta
         const checkQuery = 'SELECT id_usuario FROM usuario WHERE numero_documento = ? OR email_empleado = ?';
+        //ejecutar consulta
         const [existingUser] = await db.promise().query(checkQuery, [usuario.getNumeroDocumento(), usuario.getEmailEmpleado()]);
         //condicional
         if (existingUser.length > 0) {
             throw new Error("⚠️ El usuario con este documento o correo ya existe.");
         }
 
-        //Hashear la contraseña antes de guardarla 
+        //Hashear la contraseña
         const hashedPassword = await bcrypt.hash(usuario.getContrasena(), 10);
 
-        //Insertamos el usuario en la base de datos
+        //Insertar usuario
         const insertQuery = ` INSERT INTO usuario (tipo_documento, numero_documento, nombre_empleado, email_empleado, contrasena, id_cargo) 
             VALUES (?, ?, ?, ?, ?, ?)`;
-        //sentencia try para errores
+        //sentencia 
         try {
             const [result] = await db.promise().query(insertQuery, [
                 usuario.getTipoDocumento(),
@@ -50,8 +52,8 @@ const usuarioService = {
                 usuario.getIdCargo()
             ]);
 
-            usuario.setIdUsuario(result.insertId); // Guardar el ID generado
-
+            usuario.setIdUsuario(result.insertId); // id autogenerado por mysql
+            console.log("ID:   ", usuario.getIdUsuario());
             // ID del usuario en reconocimiento
             await reconocimientoService.createReconocimiento(usuario.getIdUsuario(), null);//null imagen segundo parametro
             return usuario;

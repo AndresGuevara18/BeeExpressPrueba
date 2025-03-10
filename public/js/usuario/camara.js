@@ -92,7 +92,7 @@ function initializeCamera() {
                         // Mostrar la vista previa de la imagen capturada
                         const imageUrl = URL.createObjectURL(blob); // Crear una URL para el Blob
                         previewImage.src = imageUrl; // Asignar la URL al src de la imagen de vista previa
-                        previewImage.style.display = "block"; // Asegurar que la imagen se muestre
+                        previewImage.style.display = "block"; //imagen se muestre
 
                         // Ocultar la cámara y mostrar botón de abrir cámara nuevamente
                         cameraBox.style.display = "none"; // No mostrar contenedor de la cámara
