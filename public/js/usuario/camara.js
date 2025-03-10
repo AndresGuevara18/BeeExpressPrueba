@@ -30,6 +30,7 @@ function initializeCamera() {
                         openCameraBtn.style.display = "none"; // Ocultar botón de abrir cámara
                         captureBtn.style.display = "block"; // Mostrar el botón capturar
                         noCaptureBtn.style.display = "block"; // Mostrar el botón de no capturar
+                        previewImage.style.display = "none";
 
                         console.log("✅ Cámara activada correctamente.");
                     } else {
@@ -54,7 +55,6 @@ function initializeCamera() {
                 let tracks = streamVideo.getTracks(); // Obtener las pistas de video devuelve un array de objetos MediaStreamTrack
                 tracks.forEach(track => track.stop()); // Detener cada pista
                 streamVideo = null; // Resetear la variable
-
                 console.log("✅ Cámara cerrada correctamente.");
             } else {
                 console.warn("⚠️ No había una cámara activa para cerrar.");
@@ -64,6 +64,7 @@ function initializeCamera() {
             openCameraBtn.style.display = "block"; // Mostrar botón de abrir cámara
             captureBtn.style.display = "none"; // Ocultar el botón capturar
             noCaptureBtn.style.display = "none"; // Ocultar botón de cerrar captura
+            previewImage.style.display = "none";
 
         } catch (error) {
             console.error("❌ Error al intentar cerrar la cámara:", error);
@@ -100,10 +101,7 @@ function initializeCamera() {
                         noCaptureBtn.style.display = "none"; // Ocultar botón de cerrar captura
 
                         alert("✅ Imagen capturada correctamente.");
-                        console.log("✅ Imagen capturada correctamente:", blob); // Mensaje en consola cuando la imagen se captura correctamente
-
-                        // Cerrar la cámara después de capturar la imagen
-                        closeCamera();
+                        console.log("✅ Imagen capturada correctamente:", blob); // Mensaje en consola cuando la imagen se captura correctamente                     
                     } else {
                         console.error("❌ No se pudo crear el Blob.");
                         alert("❌ Ocurrió un error al capturar la imagen.");
@@ -117,6 +115,9 @@ function initializeCamera() {
             console.error("❌ Error al capturar la imagen:", error); // Mostrar el error en la consola
             alert("❌ Ocurrió un error al capturar la imagen. Inténtalo nuevamente."); // Mostrar mensaje de error al usuario
         }
+
+        // Cerrar la cámara después de capturar la imagen
+        closeCamera();
     }
 
     // Asignar eventos a los botones

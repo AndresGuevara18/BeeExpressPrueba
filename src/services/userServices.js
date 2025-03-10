@@ -50,11 +50,10 @@ const usuarioService = {
                 usuario.getIdCargo()
             ]);
 
-            usuario.setIdUsuario(result.insertId); // 🔹 Guardamos el ID generado
+            usuario.setIdUsuario(result.insertId); // Guardar el ID generado
 
-            // 🔹 Insertamos el ID del usuario en reconocimiento_facial 
+            // ID del usuario en reconocimiento
             await reconocimientoService.createReconocimiento(usuario.getIdUsuario(), null);//null imagen segundo parametro
-
             return usuario;
         } catch (err) {
             throw new Error("❌ Error al crear el usuario: " + err.message);
