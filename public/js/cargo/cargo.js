@@ -115,23 +115,27 @@ async function cargarTodosLosCargos() {
 }
 
 
-// ❌ Eliminar un cargo
+//Eliminar un cargo
 async function eliminarCargo(id) {
-    // cuadro de confirmación antes de eliminar
+    // 1️⃣ Cuadro de confirmación antes de eliminar
     if (!confirm("¿Seguro que deseas eliminar este cargo?")) return;
 
     try {
-        // petición DELETE al servidor con ID 
+        //Petición  servidor c
         const response = await fetch(`/api/cargos/${id}`, { method: "DELETE" });
 
-        // si no  lanza un error
-        if (!response.ok) throw new Error("Error al eliminar el cargo");
+        // Leer la respuesta JSON del backend
+        const data = await response.json();
 
-        alert("✅ Cargo eliminado correctamente."); // Muestra mensaje de éxito
+        // error con el mensaje del backend
+        if (!response.ok) throw new Error(data.error || "Error al eliminar el cargo");
+
+        
+        alert(data.message || "✅ Cargo eliminado correctamente."); // Muestra mensaje de éxito
         cargarTodosLosCargos(); // Recarga la tabla de cargos
     } catch (error) {
-        console.error(error); //Mostrar el error en la consola
-        alert("❌ Error al eliminar el cargo."); // Mostrar alerta de error
+        console.error(error); // Mostrar el error en la consola
+        alert(`❌ ${error.message}`); // Mostrar alerta con el mensaje del backend
     }
 }
 

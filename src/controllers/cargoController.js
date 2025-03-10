@@ -80,15 +80,19 @@ const cargoController = {
     deleteCargo: async (req, res) => {
         try {
             const { id_cargo } = req.params; // Extraer el ID del cargo desde la URL
-            const resultado = await cargoService.deleteCargo(id_cargo); // Llamamos al servicio para eliminar
+            const resultado = await cargoService.deleteCargo(id_cargo); // Llamamos al servicio
 
-            if (!resultado) {
-                return res.status(404).json({ error: "Cargo no encontrado" }); // Si no existe, devolvemos error 404
+            if (resultado?.error) {
+                return res.status(400).json({ error: resultado.error }); // Enviar mensaje de error al usuario
             }
 
-            res.json({ message: "✅ Cargo eliminado correctamente" }); // Enviamos mensaje de éxito
+            if (!resultado) {
+                return res.status(404).json({ error: "❌ Cargo no encontrado" }); // Si no existe, error 404
+            }
+
+            res.json(resultado); // Enviar mensaje de éxito
         } catch (error) {
-            res.status(500).json({ error: "Error al eliminar el cargo" }); // Manejo de errores
+            res.status(500).json({ error: "❌ Error interno al eliminar el cargo" }); // Manejo de errores internos
         }
     }
 };

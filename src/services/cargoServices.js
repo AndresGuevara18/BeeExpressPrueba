@@ -57,17 +57,25 @@ o
         }
     },
 
-     // Eliminar un cargo
-     deleteCargo: async (id_cargo) => {
-        const query = 'DELETE FROM cargo WHERE id_cargo = ?'; // Consulta SQL
+    deleteCargo: async (id_cargo) => {
         try {
-            const [result] = await db.promise().query(query, [id_cargo]);
-
-            if (result.affectedRows === 0) return null; // el cargo no existe
-
-            return { message: 'Cargo eliminado correctamente' }; // Retornamos un mensaje de éxito
+            // Verificar si hay usuarios con este cargo
+            const [usuarios] = await db.promise().query('SELECT id_usuario FROM usuario WHERE id_cargo = ?', [id_cargo]);
+    
+            if (usuarios.length > 0) {
+                return { error: "⚠️ No se puede eliminar porque hay usuarios asignados el cargo." };
+            }
+    
+            // 2️⃣ Si no hay usuarios, proceder a eliminar el cargo
+            const [result] = await db.promise().query('DELETE FROM cargo WHERE id_cargo = ?', [id_cargo]);
+            
+            if (result.affectedRows === 0) return null; // El cargo no existe
+            
+    
+            return { message: "✅ Cargo eliminado correctamente" }; // Mensaje de éxito
         } catch (err) {
-            throw err; // error
+            console.error("❌ Error en deleteCargo:", err);
+            throw err; // Lanza el error para que el controlador lo maneje
         }
     }
 
