@@ -13,7 +13,7 @@
     <a href="/nuevo_cargo.html" class="agregar-cargo">Agregar Cargo</a>
 
     <input type="text" id="buscarCargo" class="buscar-cargo" placeholder="Buscar cargo...">
-    <button onclick="buscarCargo()">🔍 Buscar</button>
+    <button id="buscarCargoBtn">🔍 Buscar</button>
 
     <br/><br/>
 
@@ -44,10 +44,10 @@
                 <p><strong>Nombre:</strong> <span id="cargoNombre"></span></p>
                 <p><strong>Descripción:</strong> <span id="cargoDescripcion"></span></p>
             </div>
-            <button onclick="cerrarModal()" class="btn-cerrar">Cerrar</button>
+            <button id="cerrarModalBtn" class="btn-cerrar">Cerrar</button>
         </div>
     </div>
-    <script src="js/cargo/cargo.js"></script>
+    <script type="module" src="js/cargo/cargo.js"></script>
 
 </body>
 </html>
