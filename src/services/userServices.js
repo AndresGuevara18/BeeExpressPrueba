@@ -1,48 +1,57 @@
-const db = require('../config/database'); // Importamos la base de datos
-const Usuario = require('../models/userModel'); // Importamos el modelo de usuario
-const reconocimientoService = require('./reconocimientoServices'); // Importamos el servicio de reconocimiento
-const bcrypt = require('bcrypt'); // Importamos bcrypt para encriptar contraseñas
+const db = require('../config/database'); // base de datos
+const Usuario = require('../models/userModel'); // modelo de usuario
+const reconocimientoService = require('./reconocimientoServices'); // servicio de reconocimiento
+const bcrypt = require('bcrypt'); // bcrypt para encriptar contraseñas
+const cargoService = require('./cargoServices'); // servicio de cargos
 
 const usuarioService = {
-    // 🔹 Obtener todos los usuarios desde la base de datos
-    getAllUsers: (callback) => {
-        db.query('SELECT * FROM usuario', (err, results) => {
-            if (err) {
-                callback(err, null);
-                return;
-            }
+    // Obtener todos los usuarios 
+    getAllUsers: async () => {
+        const query = 'SELECT * FROM usuario';
+        try {
+            const [results] = await db.promise().query(query);
+
             const usuarios = results.map(row => 
-                new Usuario(row.id_usuario, row.tipo_documento, row.numero_documento, row.nombre_empleado, row.email_empleado, row.contrasena, row.id_cargo)
+                new Usuario(row.id_usuario, row.tipo_documento, row.numero_documento, row.nombre_empleado, 
+                    row.email_empleado, row.contrasena, row.id_cargo)
             );
-            callback(null, usuarios);
-        });
+
+            return usuarios;
+        } catch (err) {
+            console.error("❌ Error en getAllUsers (Service):", err);
+            throw new Error("Error al obtener los usuarios.");
+        }
     },
 
-    //nuevo usuario 
+    // Nuevo usuario 
     createUser: async (usuarioData) => {
-        //instancia del usuario con los datos recibidos
-        const usuario = new Usuario( null, usuarioData.tipo_documento, usuarioData.numero_documento, 
-            usuarioData.nombre_empleado, usuarioData.email_empleado, usuarioData.contrasena, 
-            usuarioData.id_cargo);
-
-        // Verificar si el usuario ya existe 
-        //consulta
-        const checkQuery = 'SELECT id_usuario FROM usuario WHERE numero_documento = ? OR email_empleado = ?';
-        //ejecutar consulta
-        const [existingUser] = await db.promise().query(checkQuery, [usuario.getNumeroDocumento(), usuario.getEmailEmpleado()]);
-        //condicional
-        if (existingUser.length > 0) {
-            throw new Error("⚠️ El usuario con este documento o correo ya existe.");
-        }
-
-        //Hashear la contraseña
-        const hashedPassword = await bcrypt.hash(usuario.getContrasena(), 10);
-
-        //Insertar usuario
-        const insertQuery = ` INSERT INTO usuario (tipo_documento, numero_documento, nombre_empleado, email_empleado, contrasena, id_cargo) 
-            VALUES (?, ?, ?, ?, ?, ?)`;
-        //sentencia 
         try {
+            // Instancia del usuario con los datos recibidos
+            const usuario = new Usuario(
+                null, usuarioData.tipo_documento, usuarioData.numero_documento, usuarioData.nombre_empleado, 
+                usuarioData.email_empleado, usuarioData.contrasena, usuarioData.id_cargo);
+
+            // Validar si el cargo existe
+            const cargo = await cargoService.getCargoById(usuario.getIdCargo());//llamada servicio cargo
+            if (!cargo) {
+                throw new Error("⚠️ El cargo especificado no existe.");
+            }
+
+            // Verificar si el usuario ya existe 
+            const checkQuery = 'SELECT id_usuario FROM usuario WHERE numero_documento = ? OR email_empleado = ?';
+            const [existingUser] = await db.promise().query(checkQuery, [usuario.getNumeroDocumento(), usuario.getEmailEmpleado()]);
+
+            if (existingUser.length > 0) {
+                throw new Error("⚠️ El usuario con este documento o correo ya existe.");
+            }
+
+            // Hashear la contraseña
+            const hashedPassword = await bcrypt.hash(usuario.getContrasena(), 10);
+
+            //  Insertar usuario
+            const insertQuery = `INSERT INTO usuario (tipo_documento, numero_documento, nombre_empleado, 
+            email_empleado, contrasena, id_cargo) VALUES (?, ?, ?, ?, ?, ?)`;
+
             const [result] = await db.promise().query(insertQuery, [
                 usuario.getTipoDocumento(),
                 usuario.getNumeroDocumento(),
@@ -52,35 +61,38 @@ const usuarioService = {
                 usuario.getIdCargo()
             ]);
 
-            usuario.setIdUsuario(result.insertId); // id autogenerado por mysql
-            console.log("ID:   ", usuario.getIdUsuario());
-            // ID del usuario en reconocimiento
-            await reconocimientoService.createReconocimiento(usuario.getIdUsuario(), null);//null imagen segundo parametro
+            usuario.setIdUsuario(result.insertId); // ID autogenerado por MySQL
+
+            // Crear registro de reconocimiento facial
+            await reconocimientoService.createReconocimiento(usuario.getIdUsuario(), null); // null imagen (segundo parámetro)
+
             return usuario;
         } catch (err) {
-            throw new Error("❌ Error al crear el usuario: " + err.message);
+            console.error("❌ Error en createUser (Service):", err);
+            throw new Error("Error al crear el usuario: " + err.message);
         }
     },
 
-
-    //ELIMINAR USUARIO
+    // ELIMINAR USUARIO
     deleteUser: async (id_usuario) => {
+        const query = 'DELETE FROM reconocimiento_facial WHERE id_usuario = ?';
         try {
-            //Eliminar reconocimiento facial
-            await db.promise().query('DELETE FROM reconocimiento_facial WHERE id_usuario = ?', [id_usuario]);
-    
-            //eliminar el usuario
+            // Eliminar reconocimiento facial
+            await db.promise().query(query, [id_usuario]);
+
+            // Eliminar el usuario
             const [result] = await db.promise().query('DELETE FROM usuario WHERE id_usuario = ?', [id_usuario]);
-            
-            if (result.affectedRows === 0) return null;
-            
-            return { message: 'Usuario eliminado correctamente' };
+
+            if (result.affectedRows === 0) {
+                throw new Error("⚠️ No se encontró el usuario para eliminar.");
+            }
+
+            return { message: '✅ Usuario eliminado correctamente' };
         } catch (err) {
-            console.error("❌ Error eliminar usuario servicio:", err);
-            throw err;
+            console.error("❌ Error en deleteUser (Service):", err);
+            throw new Error("Error al eliminar el usuario: " + err.message);
         }
     }
-    
 };
 
 module.exports = usuarioService; // Exportamos el servicio

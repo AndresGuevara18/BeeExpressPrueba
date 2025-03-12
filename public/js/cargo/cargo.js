@@ -1,78 +1,84 @@
-// Exportar la función obtenerCargo para usarla en otros módulos (como nuevo_usuario.js)
-export async function obtenerCargo(idCargo) {
+//todos los cargos al iniciar
+document.addEventListener("DOMContentLoaded", function () {
+    cargarTodosLosCargos();
+});
+
+//datos desde la api
+async function obtenerCargo(idCargo) {
     try {
-        // Petición GET al servidor
+        //petición GET al servidor
         const response = await fetch(`/api/cargos/${idCargo}`);
 
-        // Si la respuesta no es exitosa, lanzar un error
+        //respuesta no es exitosa error
         if (!response.ok) throw new Error("Cargo no encontrado");
 
-        // Convertir la respuesta en JSON y retornarla
-        return await response.json();
+        return await response.json(); //Convierte la respuesta en JSON y la retorna
     } catch (error) {
-        console.error("❌ Error en obtenerCargo:", error); // Mostrar el error en la consola
-        throw error; // Lanzar el error para manejarlo en la función que llama
+        console.error("❌ Error en obtenerCargo:", error); //Muestra el error en la consola
+        throw error; // error con la funcion
     }
 }
 
-// Función para buscar un cargo y mostrarlo en una ventana modal
-export async function buscarCargo() {
+//buscar un cargo y mostrarlo en una ventana modal
+async function buscarCargo() {
     try {
-        // Obtener el ID ingresado en el input
+        // Obtiene el ID ingresado en el input
         const idCargo = document.getElementById("buscarCargo").value.trim();
 
-        // Si el campo está vacío, mostrar una alerta
+        //Si  está vacío, 
         if (!idCargo) {
             alert("⚠️ Ingrese un ID.");
             return;
         }
 
-        // Llamar a la función obtenerCargo para buscar el cargo
+        // Llama a la función 
         const cargo = await obtenerCargo(idCargo);
 
-        // Si encuentra el cargo, asignar los valores obtenidos a los elementos del modal
+        //Si encuentra el cargo, asigna los valores obtenidos a los elementos del modal
         document.getElementById("cargoId").innerText = cargo.id_cargo;
         document.getElementById("cargoNombre").innerText = cargo.nombre_cargo;
         document.getElementById("cargoDescripcion").innerText = cargo.descripcion || "Sin descripción";
 
-        // Mostrar el modal
+        // Muestra el modal
         const modal = document.getElementById("modalCargo");
         modal.classList.remove("hidden");
         modal.style.display = "flex";
+
     } catch (error) {
-        // Limpiar el campo de búsqueda y mostrar un mensaje de error
-        document.getElementById("buscarCargo").value = "";
+        document.getElementById("buscarCargo").value = "";//error
         alert("❌ " + error.message);
     }
 }
 
-// Función para cerrar el modal
-export function cerrarModal() {
+
+// Cerrar modal
+function cerrarModal() {
     document.getElementById("modalCargo").classList.add("hidden");
     document.getElementById("modalCargo").style.display = "none";
     // Limpiar el campo de búsqueda al cerrar el modal
     document.getElementById("buscarCargo").value = "";
 }
+ 
 
-// Función para cargar todos los cargos en la tabla
-export async function cargarTodosLosCargos() {
+//Cargar todos los cargos en la tabla
+async function cargarTodosLosCargos() {
     try {
-        // Realizar la petición a la API para obtener los cargos
+        // Realiza la petición a la API 
         const response = await fetch('/api/cargos');
 
-        // Verificar si la respuesta es exitosa
+        // Verifica si la respuesta 
         if (!response.ok) {
             throw new Error("Error al obtener los cargos");
         }
 
-        // Convertir la respuesta a JSON
+        // Convierte la respuesta a JSON
         const data = await response.json();
 
-        // Seleccionar la tabla donde se mostrarán los cargos
+        // Selecciona la tabla 
         const tableBody = document.getElementById("cargoTable");
         tableBody.innerHTML = ""; // Limpiar la tabla antes de agregar nuevos datos
 
-        // Recorrer los cargos obtenidos y agregarlos a la tabla
+        // Recorre los cargos obtenidos y los agrega a la tabla
         data.forEach(cargo => {
             let row = document.createElement("tr");
 
@@ -88,16 +94,17 @@ export async function cargarTodosLosCargos() {
 
             // Agregar eventos a los botones de edición y eliminación
             row.querySelector(".boton-eliminar").addEventListener("click", function () {
-                eliminarCargo(this.dataset.id); // this.dataset.id captura el valor de data-id
+                eliminarCargo(this.dataset.id);// this.dataset.id captura el valor de data-id
             });
 
             row.querySelector(".boton-editar").addEventListener("click", function () {
-                editarCargo(this.dataset.id); // this.dataset.id captura el valor de data-id
+                editarCargo(this.dataset.id);// this.dataset.id captura el valor de data-id
             });
 
             // Añadir la fila a la tabla
             tableBody.appendChild(row);
         });
+
     } catch (error) {
         console.error("❌ Error en cargarTodosLosCargos:", error);
 
@@ -107,71 +114,65 @@ export async function cargarTodosLosCargos() {
     }
 }
 
-// Función para eliminar un cargo
-export async function eliminarCargo(id) {
-    // Mostrar un cuadro de confirmación antes de eliminar
+
+//Eliminar un cargo
+async function eliminarCargo(id) {
+    // 1️⃣ Cuadro de confirmación antes de eliminar
     if (!confirm("¿Seguro que deseas eliminar este cargo?")) return;
 
     try {
-        // Realizar la petición DELETE al servidor
+        //Petición  servidor c
         const response = await fetch(`/api/cargos/${id}`, { method: "DELETE" });
 
         // Leer la respuesta JSON del backend
         const data = await response.json();
 
-        // Si hay un error, lanzar una excepción con el mensaje del backend
+        // error con el mensaje del backend
         if (!response.ok) throw new Error(data.error || "Error al eliminar el cargo");
 
-        // Mostrar un mensaje de éxito y recargar la tabla de cargos
-        alert(data.message || "✅ Cargo eliminado correctamente.");
-        cargarTodosLosCargos();
+        
+        alert(data.message || "✅ Cargo eliminado correctamente."); // Muestra mensaje de éxito
+        cargarTodosLosCargos(); // Recarga la tabla de cargos
     } catch (error) {
         console.error(error); // Mostrar el error en la consola
-        alert(`❌ ${error.message}`); // Mostrar una alerta con el mensaje del backend
+        alert(`❌ ${error.message}`); // Mostrar alerta con el mensaje del backend
     }
 }
 
-// Función para editar un cargo
-export async function editarCargo(id) {
+
+//EDITAR CARGO
+async function editarCargo(id) {
     try {
-        // Obtener los datos del cargo
+        //Obtener  datos del cargo
         const cargo = await obtenerCargo(id);
 
-        // Mostrar un prompt con los valores actuales del cargo
+        //prompt con los valores actuales 
         const nuevoNombre = prompt("Nuevo nombre del cargo:", cargo.nombre_cargo);
         const nuevaDescripcion = prompt("Nueva descripción del cargo:", cargo.descripcion || "");
 
-        // Si el usuario cancela, salir de la función
+        //Si cancela 
         if (nuevoNombre === null || nuevaDescripcion === null) return;
 
-        // Validar que los campos no estén vacíos
-        if (!nuevoNombre.trim() || !nuevaDescripcion.trim()) {
+        // campos no estén vacíos
+        if (!nuevoNombre.trim() || !nuevaDescripcion.trim()) {//.trim() elimina los espacios en blanco al inicio y al final 
             alert("⚠️ Debes ingresar todos los datos.");
             return;
         }
 
-        // Realizar la petición PUT al servidor para actualizar el cargo
+        // peticion actualización a la API
         const response = await fetch(`/api/cargos/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nombre_cargo: nuevoNombre, descripcion: nuevaDescripcion }),
+            body: JSON.stringify({ nombre_cargo: nuevoNombre, descripcion: nuevaDescripcion }),// convertircadena de texto JSON
         });
 
-        // Si hay un error, lanzar una excepción
+        //si hay errores
         if (!response.ok) throw new Error("Error al actualizar el cargo");
 
-        // Mostrar un mensaje de éxito y recargar la lista de cargos
         alert("✅ Cargo actualizado correctamente.");
-        cargarTodosLosCargos();
+        cargarTodosLosCargos(); // Recargar la lista 
     } catch (error) {
         console.error("❌ Error en editarCargo:", error);
         alert("❌ Error al actualizar el cargo.");
     }
 }
-
-// Inicializar la carga de cargos al cargar la página
-document.addEventListener("DOMContentLoaded", cargarTodosLosCargos);
-
-// Asignar eventos a los botones del HTML
-document.getElementById("buscarCargoBtn").addEventListener("click", buscarCargo);
-document.getElementById("cerrarModalBtn").addEventListener("click", cerrarModal);

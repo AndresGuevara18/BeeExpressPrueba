@@ -15,17 +15,28 @@ const usuarioController = {
     // nuevo usuario
     createUser: async (req, res) => {
         try {
+            // 1️⃣ Obtener los datos del usuario desde el cuerpo de la solicitud (req.body)
             const usuarioData = req.body;
+    
+            // 2️⃣ Obtener la foto del usuario si se subió (req.file)
             const fotoBuffer = req.file ? req.file.buffer : null;
-
+    
+            // 3️⃣ Llamar al servicio para crear el usuario
             const nuevoUsuario = await usuarioService.createUser(usuarioData, fotoBuffer);
-
+    
+            // 4️⃣ Si todo sale bien, enviar una respuesta exitosa al frontend
             res.status(201).json({
-                message: "Imagen Usuario creado exitosamente.",
+                message: "✅ Usuario creado exitosamente.",
                 usuario: nuevoUsuario
             });
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            // 5️⃣ Si ocurre un error, enviar una respuesta con el mensaje de error
+            console.error("❌ Error en createUser (Controller):", error.message);
+    
+            // Determinar el código de estado adecuado según el tipo de error
+            const statusCode = error.message.includes("⚠️") ? 400 : 500;
+    
+            res.status(statusCode).json({ error: error.message });
         }
     },
 

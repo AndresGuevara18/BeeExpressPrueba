@@ -31,7 +31,7 @@ const cargoController = {
 
             res.json(cargo); // Si se encuentra, se envia formato json
         } catch (error) {
-            res.status(500).json({ error: "Error al buscar el cargo en el controlador" }); // Manejo de error en la consulta
+            res.status(500).json({ error: "Error al buscar el cargo en el controlador" });
         }
     },
 

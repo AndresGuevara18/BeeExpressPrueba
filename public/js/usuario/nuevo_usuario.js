@@ -1,11 +1,8 @@
-// Importar la función obtenerCargo desde cargo.js
-import { obtenerCargo } from '../cargo/cargo';
-
 document.addEventListener("DOMContentLoaded", () => {
     createUser(); // Inicializar el formulario de registro si está presente
 });
 
-// Función para manejar el registro de usuarios
+//Función para manejar el registro de usuarios
 function createUser() {
     const form = document.getElementById("userForm");
 
@@ -15,7 +12,7 @@ function createUser() {
     }
 
     form.addEventListener("submit", async (event) => {
-        event.preventDefault();
+        event.preventDefault(); 
 
         // Capturar valores del formulario y almacenar en un objeto
         const usuarioData = {
@@ -32,45 +29,30 @@ function createUser() {
         };
 
         // Validar que los campos obligatorios no estén vacíos
-        if (!usuarioData.tipo_documento || !usuarioData.numero_documento || !usuarioData.nombre_empleado ||
+        if (!usuarioData.tipo_documento || !usuarioData.numero_documento || !usuarioData.nombre_empleado || 
             !usuarioData.email_empleado || !usuarioData.id_cargo) {
             alert("⚠️ Por favor, complete todos los campos obligatorios.");
             return;
         }
 
-        // Validar si el cargo existe
         try {
-            const cargo = await obtenerCargo(usuarioData.id_cargo);
+            const response = await fetch("/api/usuarios", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(usuarioData)
+            });
 
-            if (!cargo) {
-                alert("⚠️ El cargo ingresado no existe.");
-                return;
-            }
+            const result = await response.json();
 
-            // Si el cargo existe, proceder con el registro del usuario
-            try {
-                const response = await fetch("/api/usuarios", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(usuarioData)
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    alert("✅ Usuario registrado exitosamente");
-                    window.location.href = "/usuario.html"; // Redirige a la lista de usuarios
-                } else {
-                    alert("FRONT⚠️ Error: " + (result.error || "No se pudo registrar el usuario."));
-                    window.location.href = "/nuevo_usuario.html";
-                }
-            } catch (error) {
-                console.error("FRONT❌ Error al enviar la solicitud:", error);
-                alert("FRONT❌ Error al registrar el usuario.");
+            if (response.ok) {
+                alert("✅ Usuario registrado exitosamente");
+                window.location.href = "/usuario.html"; // Redirige a la lista de usuarios
+            } else {
+                alert("⚠️ Error: " + (result.error || "No se pudo registrar el usuario."));
             }
         } catch (error) {
-            console.error("❌ Error al validar el cargo:", error);
-            alert("❌ El cargo ingresado no existe.");
+            console.error("FRONT❌ Error al enviar la solicitud:", error);
+            alert("FRONT❌ Error al registrar el usuario.");
         }
     });
 }

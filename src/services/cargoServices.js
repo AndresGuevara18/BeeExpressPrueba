@@ -40,6 +40,7 @@ o
         return new Cargo(result.insertId, cargoData.getNombreCargo(), cargoData.getDescripcion());
   
     } catch (err) {
+        console.error("❌ Error en createCargo (Service):", err);
         throw err; // error
     }
     },
@@ -58,24 +59,20 @@ o
     },
 
     deleteCargo: async (id_cargo) => {
+        const query = `DELETE FROM cargo WHERE id_cargo = ? 
+                AND NOT EXISTS (SELECT 1 FROM usuario WHERE id_cargo = ?)`;
+
         try {
-            // Verificar si hay usuarios con este cargo
-            const [usuarios] = await db.promise().query('SELECT id_usuario FROM usuario WHERE id_cargo = ?', [id_cargo]);
+            const [result] = await db.promise().query(query, [id_cargo, id_cargo]);
     
-            if (usuarios.length > 0) {
-                return { error: "⚠️ No se puede eliminar porque hay usuarios asignados el cargo." };
+            if (result.affectedRows === 0) {
+                return { error: "⚠️ No se puede eliminar porque hay usuarios asignados al cargo o el cargo no existe." };
             }
     
-            // 2️⃣ Si no hay usuarios, proceder a eliminar el cargo
-            const [result] = await db.promise().query('DELETE FROM cargo WHERE id_cargo = ?', [id_cargo]);
-            
-            if (result.affectedRows === 0) return null; // El cargo no existe
-            
-    
-            return { message: "✅ Cargo eliminado correctamente" }; // Mensaje de éxito
+            return { message: "✅ Cargo eliminado correctamente" };
         } catch (err) {
             console.error("❌ Error en deleteCargo:", err);
-            throw err; // Lanza el error para que el controlador lo maneje
+            throw err;
         }
     }
 
