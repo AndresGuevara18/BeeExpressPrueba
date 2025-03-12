@@ -4,11 +4,11 @@ const Cargo = require('../models/cargoModel'); // Importa el modelo Cargo
 const cargoService = {
     // Obtener todos los cargos
     getAllCargos: async () => {
-        const query = 'SELECT * FROM cargo'; // Consulta SQL
+        const query = 'SELECT * FROM cargo'; 
         try {
-            const [results] = await db.promise().query(query); // Ejecutamos la consulta con promesas
-            return results.map(row => new Cargo(row.id_cargo, row.nombre_cargo, row.descripcion)); 
+            const [results] = await db.promise().query(query); // Ejecutar la consulta con promesas
             // Converti cada fila del resultado en una instancia de Cargo
+            return results.map(row => new Cargo(row.id_cargo, row.nombre_cargo, row.descripcion)); 
         } catch (err) {
             throw err; // error,lo maneje el controlador
         }
@@ -16,7 +16,7 @@ const cargoService = {
 
     // Obtener un cargo por ID
     getCargoById: async (id_cargo) => {
-        const query = 'SELECT * FROM cargo WHERE id_cargo = ?'; // Consulta SQL
+        const query = 'SELECT * FROM cargo WHERE id_cargo = ?'; 
         try {
             const [results] = await db.promise().query(query, [id_cargo]); // Ejecuta consulta con el ID como parámetro
 
@@ -24,7 +24,6 @@ const cargoService = {
             
             //obtiene los valores de esa fila.
             return new Cargo(results[0].id_cargo, results[0].nombre_cargo, results[0].descripcion);
-o
         } catch (err) {
             throw err; // Propagamos el error para que lo maneje el controlador
         }
@@ -32,7 +31,7 @@ o
 
    // Crear 
    createCargo: async (cargoData) => {
-    const query = 'INSERT INTO cargo (nombre_cargo, descripcion) VALUES (?, ?)'; //consulta
+    const query = 'INSERT INTO cargo (nombre_cargo, descripcion) VALUES (?, ?)'; 
     try {
         // Insertar valores usando los getters
         const [result] = await db.promise().query(query, [cargoData.getNombreCargo(), cargoData.getDescripcion()]);
@@ -47,8 +46,8 @@ o
 
     //actualizar
     updateCargo: async (id_cargo, nombre_cargo, descripcion) => {
-        const query = `UPDATE cargo SET nombre_cargo = ?, descripcion = ? WHERE id_cargo = ?`;//consulta sql
-        
+        const query = `UPDATE cargo SET nombre_cargo = ?, descripcion = ? WHERE id_cargo = ?`;
+       
         try {
             const [result] = await db.promise().query(query, [nombre_cargo, descripcion, id_cargo]);
             return result; // Retorna el resultado de la consulta
@@ -75,8 +74,6 @@ o
             throw err;
         }
     }
-
-
 };
 
 // Exporta el servicio para que pueda ser utilizado en otros archivos

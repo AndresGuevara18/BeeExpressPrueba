@@ -39,7 +39,7 @@ async function agregarCargo() {
         //Redirige a "cargo.html" después de 1 segundo
         setTimeout(() => {
             window.location.href = "cargo.html";
-        }, 1000);
+        }, 100);
     } catch (error) {
         console.error("❌ Error en agregarCargo:", error);
         mensaje.innerText = "❌ Error al agregar el cargo.";

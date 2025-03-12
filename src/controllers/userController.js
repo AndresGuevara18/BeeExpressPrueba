@@ -2,14 +2,14 @@ const usuarioService = require('../services/userServices'); // Importar el servi
 
 const usuarioController = {
     //todos los usuarios
-    getAllUsers: (req, res) => {
-        usuarioService.getAllUsers((err, usuarios) => {
-            if (err) {
-                res.status(500).json({ error: "Error al obtener los usuarios" });
-                return;
-            }
-            res.json(usuarios);
-        });
+    getAllUsers: async (req, res) => {
+        try {
+            const usuarios = await usuarioService.getAllUsers(); // Llamar al servicio
+            res.json(usuarios); // Enviar la lista de usuarios en formato JSON
+        } catch (error) {
+            console.error("❌ Error en getAllUsers (Controller):", error);
+            res.status(500).json({ error: "Error al obtener los usuarios" });
+        }
     },
 
     // nuevo usuario

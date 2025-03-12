@@ -12,10 +12,10 @@ const cargoController = {
     //obtener todos los cargos
     getAllCargos: async (req, res) => {
         try {
-            const cargos = await cargoService.getAllCargos(); // llamada servicio
-            res.json(cargos); //  lista en formato JSON
+            const cargos = await cargoService.getAllCargos(); // Llamar al servicio
+            res.json(cargos); // Enviar la lista de cargos en formato JSON
         } catch (error) {
-            res.status(500).json({ error: "Error al obtener los cargos" }); // error
+            res.status(500).json({ error: "Error al obtener los cargos" });
         }
     }, 
 
