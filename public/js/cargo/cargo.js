@@ -38,6 +38,7 @@ async function buscarCargo() {
         document.getElementById("cargoId").innerText = cargo.id_cargo;
         document.getElementById("cargoNombre").innerText = cargo.nombre_cargo;
         document.getElementById("cargoDescripcion").innerText = cargo.descripcion || "Sin descripción";
+        document.getElementById("cargoTotal").innerText = cargo.total_usuarios;
 
         // Muestra el modal
         const modal = document.getElementById("modalCargo");

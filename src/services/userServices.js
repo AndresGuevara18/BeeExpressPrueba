@@ -9,9 +9,9 @@ const usuarioService = {
     getAllUsers: async () => {
         const query = 'SELECT * FROM usuario';
         try {
-            console.log("Ejecutando consulta SQL:", query);
+            //console.log("Ejecutando consulta SQL:", query);
             const [results] = await db.promise().query(query);
-            console.log("Resultados de la consulta:", results);
+            //console.log("Resultados de la consulta:", results);
 
             const usuarios = results.map(row => 
                 new Usuario(row.id_usuario, row.tipo_documento, row.numero_documento, row.nombre_empleado, 

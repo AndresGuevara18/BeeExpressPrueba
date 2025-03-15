@@ -16,16 +16,26 @@ const cargoService = {
 
     // Obtener un cargo por ID
     getCargoById: async (id_cargo) => {
-        const query = 'SELECT * FROM cargo WHERE id_cargo = ?'; 
+        const queryCargo = 'SELECT * FROM cargo WHERE id_cargo = ?'; 
+        const queryUserCount = 'SELECT COUNT(*) AS total_usuarios FROM usuario WHERE id_cargo = ?';
+    
         try {
-            const [results] = await db.promise().query(query, [id_cargo]); // Ejecuta consulta con el ID como parámetro
-
-            if (results.length === 0) return null; // Si no se encuentra
-            
-            //obtiene los valores de esa fila.
-            return new Cargo(results[0].id_cargo, results[0].nombre_cargo, results[0].descripcion);
+            const [cargoResults] = await db.promise().query(queryCargo, [id_cargo]); 
+    
+            if (cargoResults.length === 0) return null; // Si no existe el cargo, retorna null
+    
+            const [countResults] = await db.promise().query(queryUserCount, [id_cargo]); 
+            const totalUsuarios = countResults[0].total_usuarios;
+            console.log("Resultados de la consulta nuemro empleados:", totalUsuarios);
+    
+            return {
+                id_cargo: cargoResults[0].id_cargo,
+                nombre_cargo: cargoResults[0].nombre_cargo,
+                descripcion: cargoResults[0].descripcion,
+                total_usuarios: totalUsuarios
+            };
         } catch (err) {
-            throw err; // Propagamos el error para que lo maneje el controlador
+            throw err; 
         }
     },
 
